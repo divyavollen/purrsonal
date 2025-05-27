@@ -13,8 +13,8 @@ services:
       timeout: 3s
       retries: 10
 
-  init:
-    container_name: init
+  init-db:
+    container_name: init-db
     build:
       context: ./db/
     depends_on:
@@ -29,5 +29,3 @@ services:
       - PURRSONAL_DB=${PURRSONAL_DB_NAME}
       - PURRSONAL_USER=${PURRSONAL_USER}
       - PURRSONAL_PASSWORD=${PURRSONAL_PASSWORD}
-
-  
