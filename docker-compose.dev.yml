@@ -1,6 +1,7 @@
 services:
+
   purrsonal-db:
-    container_name: purrsonal-db
+    container_name: db
     image: postgres:17-alpine
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
@@ -20,6 +21,7 @@ services:
     depends_on:
       purrsonal-db:
         condition: service_healthy
+    restart: "no"
     environment:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
@@ -29,3 +31,25 @@ services:
       - PURRSONAL_DB=${PURRSONAL_DB_NAME}
       - PURRSONAL_USER=${PURRSONAL_USER}
       - PURRSONAL_PASSWORD=${PURRSONAL_PASSWORD}
+
+  ui:
+    container_name: ui
+    build:
+      context: ./frontend/
+    ports:
+      - 5173:5173
+
+  api:
+    container_name: api
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    depends_on:
+      ui:
+        condition: service_started
+      init-db:
+        condition: service_completed_successfully
+    environment:
+      - JWT_SECRET=${JWT_SECRET}

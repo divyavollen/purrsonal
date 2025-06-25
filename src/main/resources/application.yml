@@ -1,8 +1,8 @@
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/purrsonal_db
-    username: root
-    password: root
+    username: ${PURRSONAL_USER}
+    password: ${PURRSONAL_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
@@ -10,3 +10,17 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  profiles:
+    active: dev
+
+jwt:
+  secret: ${JWT_SECRET}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+  endpoint:
+    health:
+      show-details: always

@@ -15,3 +15,7 @@ env/*
 
 # NextJS #
 frontend/node_modules/*
+frontend/dist/
+frontend/.vite/
+frontend/.cache/
+frontend/.next/
