@@ -1,0 +1,157 @@
+body {
+    background: white;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+      "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+      sans-serif;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+  }
+
+  .logo > span {
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 3px;
+    width: 100px;
+    color: #404146;
+  }
+
+  .logo-img {
+    width: 60px;
+    opacity: 0.65;
+    padding-right: 5px;
+  }
+  
+  form {
+    max-width: 500px;
+    max-height: 700px;
+    margin: 20px auto;
+    border-radius: 4px;
+    border: 1px solid white;
+    padding: 50px 50px 50px 50px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  }
+  
+  form > h1 {
+    color: #404146;
+    margin-bottom: 30px;
+    text-align: center;
+    font-size: 40px;
+    font-weight: 400;
+  }
+  
+  p {
+    color: #cd5c08;
+    font-size: 14px;
+  }
+  
+  p::before {
+    display: inline;
+    content: "⚠ ";
+  }
+  
+  input {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    border-radius: 4px;
+    border: 1px solid #404146;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    font-size: 14px;
+  }
+  
+  label {
+    line-height: 2;
+    text-align: left;
+    display: block;
+    margin-bottom: 5px;
+    margin-top: 20px;
+    color: #404146;
+    font-size: 16px;
+    font-weight: 400;
+  }
+  
+  button[type="submit"],
+  input[type="submit"] {
+    background: #c1d8c3;
+    color: white;
+    text-transform: uppercase;
+    border: none;
+    margin-top: 40px;
+    padding: 20px;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 5px;
+  }
+  
+  button[type="submit"]:hover,
+  input[type="submit"]:hover {
+    background: #6a9c89;
+  }
+  
+  button[type="submit"]:active,
+  input[type="button"]:active,
+  input[type="submit"]:active {
+    transition: 0.5s all;
+    transform: translateY(3px);
+    border: 1px solid transparent;
+    opacity: 0.8;
+  }
+  
+  input:disabled {
+    opacity: 0.4;
+  }
+
+  .password-criteria {
+    border: 1px solid #99C8BC;
+    border-radius: 5px;
+    padding: 15px;
+    background-color: #D1E8C9;
+    color: #64979D;
+    margin-bottom: 10px;
+  }
+  
+  .password-criteria ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+  }
+  
+  .password-criteria li {
+    margin: 5px 0;
+    font-size: 14px;
+  }
+  
+  .password-criteria li.valid {
+    color: #00cc66;
+  }
+  
+  .password-criteriali.invalid {
+    color: #99C8BC;
+  }
+  
+  .password-criteria strong {
+    color: #64979D;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .login-link {
+    display: flex;
+    justify-content: center;
+  }
+
+  .login-link > a {
+    text-decoration: none;  
+    color: #6a9c89;
+  }
+
+  .login-link > span {
+    margin-right: 5px;
+    color: #404146;
+  }
