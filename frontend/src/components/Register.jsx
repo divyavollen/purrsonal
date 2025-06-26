@@ -55,6 +55,8 @@ export default function Register() {
         <form
             onSubmit={handleSubmit(data => registerUser(data))}
         >
+            <h1>Sign Up</h1>
+
             <label>Username</label>
             <input type="text" placeholder="johndoe"
                 {...register("username", {
@@ -111,7 +113,9 @@ export default function Register() {
 
             <input type="submit" value="Register" />
 
-            <Link to="/login">Login</Link>
+            <div className="login-link">
+                <span>Already have an account?</span> <Link to="/login">Sign in</Link>
+            </div>
         </form>
     );
 }

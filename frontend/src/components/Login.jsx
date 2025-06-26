@@ -1,9 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
+
 import "../style.css"
 
-export default function LoginForm() {
+export default function Login() {
   const {
     register,
     handleSubmit,
@@ -42,7 +44,6 @@ export default function LoginForm() {
     }).catch((error) => {
       console.error("Error:", error);
     });
-    });
   }
 
   return (
@@ -64,6 +65,9 @@ export default function LoginForm() {
       {errors.password && <p>{errors.password.message}</p>}
 
       <input type="submit" value="Login" />
+      <div className="login-link">
+        <span>Don't have an account?</span> <Link to="/register">Sign up</Link>
+      </div>
     </form>
   );
 }
