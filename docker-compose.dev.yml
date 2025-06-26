@@ -1,7 +1,7 @@
 services:
 
   purrsonal-db:
-    container_name: db
+    container_name: purrsonal-db
     image: postgres:17-alpine
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
