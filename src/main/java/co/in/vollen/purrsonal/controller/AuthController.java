@@ -3,6 +3,7 @@ package co.in.vollen.purrsonal.controller;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,10 +51,10 @@ public class AuthController {
             @ApiResponse(responseCode = "401", description = "Invalid username or password", content = @Content(mediaType = "text/plain"))
     })
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
         try {
-            String jwt = userService.authenticate(request.getUsername(), request.getPassword());
-            return ResponseEntity.ok(Map.of("token", jwt));
+            ResponseCookie response = userService.authenticate(request.getUsername(), request.getPassword());
+            return ResponseEntity.ok(response);
         } catch (BadCredentialsException e) {
             return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)

@@ -1,5 +1,8 @@
 package co.in.vollen.purrsonal.service;
 
+import java.util.Map;
+
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class UserService {
-
+ 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JWTUtil jwtUtil;
@@ -38,7 +41,7 @@ public class UserService {
     }
 
 
-    public String authenticate(String username, String password) {
+    public ResponseCookie authenticate(String username, String password) {
 
         User user = userRepository.findByUsername(username)
                     .orElseThrow(() -> new BadCredentialsException("Invalid credentials"));
@@ -47,7 +50,8 @@ public class UserService {
             log.error("Invalid credentials");
             throw new BadCredentialsException("Invalid credentials");
         }
-        String token = jwtUtil.generateToken(username);
-        return token;
+        ResponseCookie cookie = jwtUtil.generateToken(username);
+
+        return cookie;
     }
 }

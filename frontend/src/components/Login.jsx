@@ -28,19 +28,18 @@ export default function Login() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
+        credentials: "include",
       }
-    ).then((res) => {
+    ).then(res => {
       if (!res.ok) {
         throw new Error("Login failed");
       }
+
       return res.json();
-    }).then((result) => {
-      console.log("Login successful:", result);
-    }).then((result) => {
-      console.log("Login successful:", result);
-      if (result.token) {
-        localStorage.setItem('authToken', result.token);
-      }
+    }).then(data => {
+      
+      console.log(data)
+
     }).catch((error) => {
       console.error("Error:", error);
     });

@@ -1,8 +1,12 @@
 package co.in.vollen.purrsonal.security;
 
+import java.time.Duration;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
 import com.auth0.jwt.JWT;
@@ -23,17 +27,31 @@ public class JWTUtil {
 
     private static final String ISSUER = "PurrsonalPetApp";
     private static final String USERNAME = "username";
-    
-    public String generateToken(String username) {
 
+    public ResponseCookie generateToken(String username) {
+
+        Date issuedAt = new Date();
+        long millis = System.currentTimeMillis() + expirationMs;
+        Date expiresAt = new Date(millis);
+        
         try {
-            return JWT.create()
+            String token = JWT.create()
                     .withSubject(USERNAME)
                     .withClaim(USERNAME, username)
                     .withIssuer(ISSUER)
-                    .withIssuedAt(new Date())
-                    .withExpiresAt(new Date(System.currentTimeMillis() + expirationMs))
+                    .withIssuedAt(issuedAt)
+                    .withExpiresAt(expiresAt)
                     .sign(Algorithm.HMAC256(secret));
+
+            ResponseCookie cookie = ResponseCookie.from("token", token)
+                    .httpOnly(true)
+                    .secure(false) 
+                    .path("/")
+                    .sameSite("Lax")
+                    .maxAge(Duration.ofSeconds(expirationMs / 1000))
+                    .build();
+
+            return cookie;
 
         } catch (JWTCreationException e) {
             throw new RuntimeException("Error creating JWT token", e);
