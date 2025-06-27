@@ -3,8 +3,6 @@ import ReactDOM from "react-dom";
 import { useForm } from "react-hook-form"
 import { Link } from "react-router-dom";
 
-import "../style.css"
-
 export default function Register() {
     const {
         register,
@@ -28,6 +26,8 @@ export default function Register() {
 
     const isPasswordValid = hasUpperAndLower && hasNumberOrSymbol && isLongEnough && isShortEnough;
 
+    const [success, setSuccess] = React.useState(false)
+
     function registerUser(data) {
         console.log(JSON.stringify(data))
 
@@ -45,7 +45,8 @@ export default function Register() {
             }
             return res.json();
         }).then((result) => {
-            console.log("Registration successful:", result);
+            console.log("Registration successful:", result)
+            setSuccess(true)
         }).catch((error) => {
             console.error("Error:", error);
         });
@@ -56,6 +57,11 @@ export default function Register() {
             onSubmit={handleSubmit(data => registerUser(data))}
         >
             <h1>Sign Up</h1>
+            {success && (
+                <div className="success-message">
+                    Registration successful! You can now log in.
+                </div>
+            )}
 
             <label>Username</label>
             <input type="text" placeholder="johndoe"

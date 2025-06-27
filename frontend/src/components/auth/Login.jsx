@@ -1,9 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
-
-import "../style.css"
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Login() {
   const {
@@ -18,9 +16,10 @@ export default function Login() {
     }
   });
 
-  function login(data) {
+  const navigate = useNavigate()
 
-    console.log(JSON.stringify(data));
+  function login(data) {
+    
     fetch("http://localhost:8080/api/auth/login",
       {
         method: "POST",
@@ -37,8 +36,8 @@ export default function Login() {
 
       return res.json();
     }).then(data => {
-      
-      console.log(data)
+
+      navigate("/home");
 
     }).catch((error) => {
       console.error("Error:", error);
@@ -49,6 +48,9 @@ export default function Login() {
     <form
       onSubmit={handleSubmit(data => login(data))}
     >
+
+      <h1>Sign In</h1>
+
       <label>Username</label>
       <input {...register("username", {
         required: "Username is required"

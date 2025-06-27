@@ -1,0 +1,28 @@
+header {
+    display: flex;
+    max-height: 100px;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+  }
+  
+  .main-logo {
+    display: flex;
+    align-items: center;
+    margin-left: 10px
+  }
+  
+  .main-logo > span {
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 3px;
+    width: 100px;
+    color: #404146;
+}
+
+.home-link {
+    margin-left: auto;
+}
+
+.logout-link {
+    margin-left: 20px;
+    margin-right: 20px;
+}
