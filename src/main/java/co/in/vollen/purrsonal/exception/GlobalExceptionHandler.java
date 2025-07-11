@@ -1,5 +1,6 @@
 package co.in.vollen.purrsonal.exception;
 
+import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,12 +14,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import co.in.vollen.purrsonal.dto.ErrorResponse;
+import jakarta.persistence.criteria.CriteriaBuilder.In;
 import jakarta.servlet.http.HttpServletRequest;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ExceptionHandler({MethodArgumentNotValidException.class, InvalidParameterException.class})
     public ResponseEntity<ErrorResponse> handleValidationErrors(MethodArgumentNotValidException ex,
             HttpServletRequest request) {
 
@@ -47,9 +49,9 @@ public class GlobalExceptionHandler {
             HttpServletRequest request) {
 
         ErrorResponse errorResponse = createErrorResponse(request.getRequestURI(), List.of(ex.getMessage()),
-                HttpStatus.UNAUTHORIZED.value());
+                HttpStatus.CONFLICT.value());
 
-        return new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(Exception.class)
@@ -58,7 +60,7 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = createErrorResponse(request.getRequestURI(), List.of(ex.getMessage()),
                 HttpStatus.INTERNAL_SERVER_ERROR.value());
 
-        return new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     private ErrorResponse createErrorResponse(String path, List<String> message, int statusCode) {
