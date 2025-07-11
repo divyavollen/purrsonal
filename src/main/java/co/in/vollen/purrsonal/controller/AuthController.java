@@ -23,17 +23,16 @@ public class AuthController {
 
     private final UserService userService;
 
-    @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.CREATED)
-    public void register(@Valid @RequestBody RegisterRequest request) {
+    @PostMapping(value = "/register")
+    public ResponseEntity<Void> register(@Valid @RequestBody RegisterRequest request) {
 
         userService.register(request.getUsername(), request.getEmail(), request.getPassword());
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/login")
-    @ResponseBody
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<String> login(@Valid @RequestBody LoginRequest request) {
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<String>(/*token here*/ "", HttpStatus.OK);
     }
 }

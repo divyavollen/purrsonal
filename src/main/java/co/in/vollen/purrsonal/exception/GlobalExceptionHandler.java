@@ -1,34 +1,68 @@
 package co.in.vollen.purrsonal.exception;
 
-import java.util.HashMap;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import co.in.vollen.purrsonal.dto.ErrorResponse;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, List<String>>> handleValidationErrors(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ErrorResponse> handleValidationErrors(MethodArgumentNotValidException ex,
+            HttpServletRequest request) {
+
         List<String> errors = ex.getBindingResult()
                 .getFieldErrors().stream()
-                .map(FieldError::getDefaultMessage)
+                .map(error -> error.getField() + " : " + error.getDefaultMessage())
                 .collect(Collectors.toList());
 
-        return new ResponseEntity<>(getErrorsMap(errors), new HttpHeaders(), HttpStatus.BAD_REQUEST);
+        ErrorResponse errorResponse = createErrorResponse(request.getRequestURI(), errors,
+                HttpStatus.BAD_REQUEST.value());
+
+        return new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    private Map<String, List<String>> getErrorsMap(List<String> errors) {
-        Map<String, List<String>> errorResponse = new HashMap<>();
-        errorResponse.put("errors", errors);
-        return errorResponse;
+    @ExceptionHandler({ BadCredentialsException.class, UsernameNotFoundException.class })
+    public ResponseEntity<ErrorResponse> handleBadCredentials(Exception ex, HttpServletRequest request) {
+
+        ErrorResponse errorResponse = createErrorResponse(request.getRequestURI(), List.of(ex.getMessage()),
+                HttpStatus.UNAUTHORIZED.value());
+
+        return new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleUserAlreadyExists(UserAlreadyExistsException ex,
+            HttpServletRequest request) {
+
+        ErrorResponse errorResponse = createErrorResponse(request.getRequestURI(), List.of(ex.getMessage()),
+                HttpStatus.UNAUTHORIZED.value());
+
+        return new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleGenericException(Exception ex, HttpServletRequest request) {
+
+        ErrorResponse errorResponse = createErrorResponse(request.getRequestURI(), List.of(ex.getMessage()),
+                HttpStatus.INTERNAL_SERVER_ERROR.value());
+
+        return new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.UNAUTHORIZED);
+    }
+
+    private ErrorResponse createErrorResponse(String path, List<String> message, int statusCode) {
+
+        return new ErrorResponse(path, message, statusCode, LocalDateTime.now());
     }
 }

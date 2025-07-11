@@ -15,7 +15,7 @@ public class RegisterRequest {
 
     @NotNull(message = "Username is required")
     @Size(min = 4, max = 20, message = "Username must be between 4 and 20 characters")
-    @Pattern(regexp = "^[a-zA-Z](?:[a-zA-Z0-9]|[_-](?![_-]))*[a-zA-Z0-9]$", message = "Invalid username format")
+    @Pattern(regexp = "^[a-zA-Z](?:[a-zA-Z0-9]|[_-](?![_-]))*[a-zA-Z0-9]$", message = "Username must start with a letter, end with a letter or digit, and may include underscores or hyphens")
     private String username;
 
     @NotNull(message = "Email is required")
@@ -23,7 +23,7 @@ public class RegisterRequest {
     private String email;
 
     @NotNull(message = "Password is required")
-    @Size(min = 12, max = 64, message = "Username must be between 12 and 64 characters")
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*])[A-Za-z\\d!@#$%^&*]+$", message = "Invalid password format")
+    @Size(min = 12, max = 64, message = "Password must be between 12 and 64 characters")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*])[A-Za-z\\d!@#$%^&*]+$", message = "Password must include uppercase and lowercase letters, a number, and a special character (!@#$%^&*)")
     private String password;
 }
