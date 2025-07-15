@@ -13,8 +13,14 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.auth0.jwt.exceptions.AlgorithmMismatchException;
+import com.auth0.jwt.exceptions.IncorrectClaimException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.MissingClaimException;
+import com.auth0.jwt.exceptions.SignatureVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
+
 import co.in.vollen.purrsonal.dto.ErrorResponse;
-import jakarta.persistence.criteria.CriteriaBuilder.In;
 import jakarta.servlet.http.HttpServletRequest;
 
 @RestControllerAdvice
@@ -52,6 +58,16 @@ public class GlobalExceptionHandler {
                 HttpStatus.CONFLICT.value());
 
         return new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(JWTVerificationException.class)
+    public ResponseEntity<ErrorResponse> handleTokenValidationExceptions(JWTVerificationException ex,
+            HttpServletRequest request) {
+
+        ErrorResponse errorResponse = createErrorResponse(request.getRequestURI(), List.of(ex.getMessage()),
+                HttpStatus.UNAUTHORIZED.value());
+
+        return new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(Exception.class)

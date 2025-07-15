@@ -21,3 +21,7 @@ management:
 logging:
   level:
     root: DEBUG
+
+jwt:
+  secret:
+    key: ${JWT_SECRET}
