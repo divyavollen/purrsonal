@@ -3,7 +3,6 @@ package co.in.vollen.purrsonal.service;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -37,12 +36,18 @@ public class UserService {
 
     public String authenticate(String username, String password) {
 
-        Authentication authentication = authenticationManager.authenticate(
+        try {
+        authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(username, password));
 
-        if (authentication.isAuthenticated()) {
-            return jwtService.generateToken(username);
-        } else {
+            String token = jwtService.generateToken(username);
+            
+            if(token == null || token.isEmpty()) {
+                throw new BadCredentialsException("Invalid username or password");
+            }
+
+            return token;
+        } catch(Exception ex){
             throw new BadCredentialsException("Invalid username or password");
         }
     }

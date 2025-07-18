@@ -24,4 +24,4 @@ logging:
 
 jwt:
   secret:
-    key: ${JWT_SECRET}
+    key: HFS5vl4mo5jk0xAMnMA9

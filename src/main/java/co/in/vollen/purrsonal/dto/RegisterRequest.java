@@ -19,6 +19,7 @@ public class RegisterRequest {
     private String username;
 
     @NotNull(message = "Email is required")
+    @Size(min = 6, max = 254, message = "Email must be between 6 and 254 characters")
     @Email(message = "Invalid email format")
     private String email;
 

@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import co.in.vollen.purrsonal.dto.LoginRequest;
 import co.in.vollen.purrsonal.dto.RegisterRequest;
-import co.in.vollen.purrsonal.service.JwtService;
 import co.in.vollen.purrsonal.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 public class AuthController {
 
     private final UserService userService;
-    private final JwtService jwtService;
 
     @PostMapping(value = "/register")
     public ResponseEntity<Void> register(@Valid @RequestBody RegisterRequest request) {
@@ -32,7 +30,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<String> login(@Valid @RequestBody LoginRequest request) {
 
-        String token = jwtService.generateToken(request.getUsername());
+        String token = userService.authenticate(request.getUsername(), request.getPassword());
         return new ResponseEntity<String>(token, HttpStatus.OK);
     }
 }
