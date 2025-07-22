@@ -1,5 +1,8 @@
 package co.in.vollen.purrsonal.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,9 +31,11 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<Map<String, String>> login(@Valid @RequestBody LoginRequest request) {
 
         String token = userService.authenticate(request.getUsername(), request.getPassword());
-        return new ResponseEntity<String>(token, HttpStatus.OK);
+        Map<String, String> response = new HashMap<>();
+        response.put("token", token);
+        return new ResponseEntity<Map<String, String>>(response, HttpStatus.OK);
     }
 }

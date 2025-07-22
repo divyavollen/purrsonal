@@ -1,3 +1,12 @@
+.auth-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;      /* works now because of html/body/root fix */
+    min-height: 100vh; /* ensures it works even if content is short */
+    padding: 1rem;
+  }  
+
 form {
     display: flex;
     flex-direction: column;

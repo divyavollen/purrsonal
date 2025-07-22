@@ -8,5 +8,11 @@ body {
     width: 100%;
     font-size: 1rem;
     display: grid;
-    place-items: center;
 }
+
+#root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  

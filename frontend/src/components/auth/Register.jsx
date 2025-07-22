@@ -1,9 +1,9 @@
-import React from 'react';
-import { useForm } from 'react-hook-form';
+import React from "react";
+import { useForm } from "react-hook-form";
 import "../../css/auth.css";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
 import Logo from "/src/images/logo.png";
 
 export default function Register() {
@@ -44,7 +44,7 @@ export default function Register() {
                 });
 
                 Object.entries(firstErrorsByField).forEach(([field, message]) => {
-                    setError(field, { type: 'server', message });
+                    setError(field, { type: "server", message });
                 });
 
                 throw new Error("Registration failed");
@@ -53,7 +53,7 @@ export default function Register() {
     }
 
     return (
-        <>
+        <div className="auth-wrapper">
             <Form onSubmit={handleSubmit(onSubmit)}>
                 <div className="auth-header">
                     <img src={Logo} alt="Purrsonal Logo" className="auth-logo" />
@@ -80,7 +80,7 @@ export default function Register() {
                             className="btn-close"
                             data-bs-dismiss="alert"
                             aria-label="Close"
-                            onClick={() => clearErrors('global')}
+                            onClick={() => clearErrors("global")}
                         ></button>
                     </div>
                 )}
@@ -174,6 +174,6 @@ export default function Register() {
                     Already have an account? <a href="/login">Login</a>
                 </p>
             </Form >
-        </>
+        </div>
     );
 }

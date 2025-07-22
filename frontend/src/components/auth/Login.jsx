@@ -1,20 +1,20 @@
-import React from 'react';
-import Button from 'react-bootstrap/Button';
+import React from "react";
+import Button from "react-bootstrap/Button";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
-import Form from 'react-bootstrap/Form';
-import { useForm } from 'react-hook-form';
+import Form from "react-bootstrap/Form";
+import { useForm } from "react-hook-form";
 import "../../css/auth.css";
 import Logo from "/src/images/logo.png";
-
+import { useNavigate } from "react-router";
 export default function Login() {
+
+    const navigate = useNavigate();
 
     const {
         register,
         handleSubmit,
         formState: { errors },
         setError,
-        reset,
-        clearErrors,
     } = useForm();
 
     const onSubmit = formData => {
@@ -27,26 +27,25 @@ export default function Login() {
             },
             body: JSON.stringify(formData)
         }).then(async response => {
+            const data = await response.json();
+            console.log(data);
             if (response.ok) {
-                setRegistered(true);
-                reset();
-                clearErrors();
+                localStorage.setItem("token", data.token);
+                navigate("/");
             } else {
-                const data = await response.json();
                 console.error("Registration failed:", data.errors);
                 data.errors.forEach(({ field, message }) => {
-                    setError(field, { type: 'server', message });
+                    setError(field, { type: "server", message });
                     console.error(`Error in field ${field}: ${message}`);
                 });
-
-
                 throw new Error("Registration failed");
             }
         });
     }
 
     return (
-        <>
+
+        <div className="auth-wrapper">
             <Form onSubmit={handleSubmit(onSubmit)}>
                 <div className="auth-header">
                     <img src={Logo} alt="Purrsonal Logo" className="auth-logo" />
@@ -60,7 +59,7 @@ export default function Login() {
                             className="btn-close"
                             data-bs-dismiss="alert"
                             aria-label="Close"
-                            onClick={() => clearErrors('global')} 
+                            onClick={() => clearErrors("global")}
                         ></button>
                     </div>
                 )}
@@ -117,13 +116,13 @@ export default function Login() {
                 </FloatingLabel>
 
                 <Button type="submit" variant="primary" className="w-100 register-btn">
-                    Register
+                    Login
                 </Button>
 
                 <p className="auth-footer-text">
-                    Don't have an account? <a href="/register">Sign Up</a>
+                    Don"t have an account? <a href="/register">Sign Up</a>
                 </p>
             </Form>
-        </>
+        </div>
     );
 }
