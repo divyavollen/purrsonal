@@ -9,3 +9,9 @@ builddb:
 
 pushdb:
 	docker image push occupantangler/purrsonal_db:latest
+
+rmi:
+	docker rmi -f $$(docker images -q)
+
+rmc:
+	docker rm -f $$(docker ps -aq)

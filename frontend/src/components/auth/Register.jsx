@@ -20,9 +20,9 @@ export default function Register() {
     } = useForm();
 
     const onSubmit = formData => {
-        console.log(formData);
+        const API_URL = import.meta.env.VITE_API_URL;
 
-        fetch("http://localhost:8080/api/auth/register", {
+        fetch(`${API_URL}/auth/register`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

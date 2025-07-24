@@ -1,8 +1,9 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/purrsonal_db
-    username: root
-    password: root
+    url: jdbc:postgresql://${PURRSONAL_DB_HOST}:${POSTGRES_DB_PORT}/${PURRSONAL_DB_NAME}
+    username: ${PURRSONAL_DB_USER}
+    password: ${PURRSONAL_DB_PASSWORD}
+    driverClassName: ${PURRSONAL_DB_DRIVER}
   jpa:
     hibernate:
       ddl-auto: update
@@ -11,4 +12,4 @@ spring:
       hibernate:
         format_sql: false
   profiles:
-    active: dev
+    active: ${SPRING_PROFILES_ACTIVE}

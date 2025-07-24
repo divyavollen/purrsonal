@@ -1,11 +1,10 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:purrsonal_db
-    username: root
-    password:
-    driverClassName: org.h2.Driver
+    url: jdbc:postgresql://${PURRSONAL_DB_HOST}:${PURRSONAL_DB_PORT}/${PURRSONAL_DB_NAME}
+    username: ${PURRSONAL_DB_USER}
+    password: ${PURRSONAL_DB_PASSWORD}
+    driverClassName: ${PURRSONAL_DB_DRIVER}
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: update
 

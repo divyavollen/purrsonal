@@ -2,10 +2,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%;      /* works now because of html/body/root fix */
-    min-height: 100vh; /* ensures it works even if content is short */
+    height: 100%;
+    /* works now because of html/body/root fix */
+    min-height: 100vh;
+    /* ensures it works even if content is short */
     padding: 1rem;
-  }  
+}
 
 form {
     display: flex;
@@ -39,7 +41,7 @@ form {
     opacity: 0.7;
 }
 
-.auth-header > h1 {
+.auth-header>h1 {
     color: #555;
     font-size: 1.7rem;
     font-weight: 600;

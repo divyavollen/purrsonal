@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import "../../css/auth.css";
 import Logo from "/src/images/logo.png";
 import { useNavigate } from "react-router";
+
 export default function Login() {
 
     const navigate = useNavigate();
