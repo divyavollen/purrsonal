@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 
 import co.in.vollen.purrsonal.dto.ApiFieldError;
@@ -26,14 +28,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class GlobalExceptionHandler {
 
-        @ExceptionHandler({ MethodArgumentNotValidException.class, InvalidParameterException.class })
+        @ExceptionHandler(MethodArgumentNotValidException.class)
         public ResponseEntity<ErrorResponse> handleValidationErrors(MethodArgumentNotValidException ex,
                         HttpServletRequest request) {
 
                 List<ApiFieldError> fieldErrors = ex.getBindingResult()
                                 .getFieldErrors().stream()
                                 .sorted(Comparator.comparing(FieldError::getField)
-                                .thenComparing(FieldError::getDefaultMessage))
+                                                .thenComparing(FieldError::getDefaultMessage))
                                 .map(error -> new ApiFieldError(error.getField(), error.getDefaultMessage()))
                                 .collect(Collectors.toList());
 
@@ -43,7 +45,8 @@ public class GlobalExceptionHandler {
                 return new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.BAD_REQUEST);
         }
 
-        @ExceptionHandler({ BadCredentialsException.class, UsernameNotFoundException.class })
+        @ExceptionHandler({ BadCredentialsException.class, UsernameNotFoundException.class,
+                        AuthenticationCredentialsNotFoundException.class })
         public ResponseEntity<ErrorResponse> handleBadCredentials(Exception ex, HttpServletRequest request) {
 
                 ErrorResponse errorResponse = createErrorResponse(request.getRequestURI(),
@@ -64,8 +67,8 @@ public class GlobalExceptionHandler {
                 return new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.CONFLICT);
         }
 
-        @ExceptionHandler(JWTVerificationException.class)
-        public ResponseEntity<ErrorResponse> handleTokenValidationExceptions(JWTVerificationException ex,
+        @ExceptionHandler({ JWTVerificationException.class, JWTDecodeException.class })
+        public ResponseEntity<ErrorResponse> handleTokenValidationExceptions(Exception ex,
                         HttpServletRequest request) {
 
                 ErrorResponse errorResponse = createErrorResponse(request.getRequestURI(),

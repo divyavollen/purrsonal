@@ -1,11 +1,9 @@
 import React from "react";
-import Button from "react-bootstrap/Button";
-import FloatingLabel from "react-bootstrap/FloatingLabel";
-import Form from "react-bootstrap/Form";
+import { Form, FloatingLabel, Button } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import "../../css/auth.css";
 import Logo from "/src/images/logo.png";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
 
@@ -16,6 +14,7 @@ export default function Login() {
         handleSubmit,
         formState: { errors },
         setError,
+        clearErrors
     } = useForm();
 
     const onSubmit = formData => {

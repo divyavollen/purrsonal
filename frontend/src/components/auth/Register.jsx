@@ -1,9 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import "../../css/auth.css";
-import FloatingLabel from "react-bootstrap/FloatingLabel";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
+import { Form, FloatingLabel, Button } from "react-bootstrap";
 import Logo from "/src/images/logo.png";
 
 export default function Register() {

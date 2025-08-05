@@ -37,17 +37,17 @@ public class UserService {
     public String authenticate(String username, String password) {
 
         try {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(username, password));
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(username, password));
 
             String token = jwtService.generateToken(username);
-            
-            if(token == null || token.isEmpty()) {
+
+            if (token == null || token.isEmpty()) {
                 throw new BadCredentialsException("Invalid username or password");
             }
 
             return token;
-        } catch(Exception ex){
+        } catch (Exception ex) {
             throw new BadCredentialsException("Invalid username or password");
         }
     }

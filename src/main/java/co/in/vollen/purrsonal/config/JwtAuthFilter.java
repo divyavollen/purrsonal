@@ -1,17 +1,23 @@
 package co.in.vollen.purrsonal.config;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import co.in.vollen.purrsonal.dto.ApiFieldError;
+import co.in.vollen.purrsonal.dto.ErrorResponse;
 import co.in.vollen.purrsonal.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -39,12 +45,29 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
 
-        UserDetails userDetails = jwtService.validateTokenAndRetrieveUser(header.replace(BEARER, ""));
+        try {
+            UserDetails userDetails = jwtService.validateTokenAndRetrieveUser(header.replace(BEARER, ""));
 
-        Authentication authentication = new UsernamePasswordAuthenticationToken(
-                userDetails, null, userDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                    userDetails, null, userDetails.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        filterChain.doFilter(request, response);
+            filterChain.doFilter(request, response);
+
+        } catch (JWTVerificationException ex) {
+
+            ApiFieldError fieldError = new ApiFieldError("global", "User not authenticated");
+            ErrorResponse error = new ErrorResponse(request.getRequestURI(), List.of(fieldError),
+                    HttpStatus.UNAUTHORIZED.value(), LocalDateTime.now());
+
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.registerModule(new JavaTimeModule());
+            String json = mapper.writeValueAsString(error);
+
+            response.getWriter().write(json);
+        }
     }
 }
