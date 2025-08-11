@@ -1,6 +1,8 @@
 import React from "react";
+import { Button, FloatingLabel, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import { Form, FloatingLabel, Button } from "react-bootstrap";
+import "../../css/pet.css";
+import { validateFile } from "../utils/validate.js";
 
 export default function AddPet() {
 
@@ -22,6 +24,16 @@ export default function AddPet() {
         console.log(formData)
         const API_URL = import.meta.env.VITE_API_URL;
 
+        const formDataObj = new FormData();
+
+        formDataObj.append('name', formData.name);
+        formDataObj.append('sex', formData.sex);
+        formDataObj.append('birthDate', formData.birthDate);
+
+        if (formData.photo && formData.photo.length > 0) {
+            formDataObj.append('photo', formData.photo[0]);
+        }
+
         fetch(`${API_URL}/pets/add`, {
 
             method: "POST",
@@ -29,7 +41,7 @@ export default function AddPet() {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`
             },
-            body: JSON.stringify(formData)
+            body: formDataObj
         })
             .then(async response => {
                 if (response.ok) {
@@ -49,7 +61,7 @@ export default function AddPet() {
                     Object.entries(firstErrorsByField).forEach(([field, message]) => {
                         console.error(`Error in field ${field}: ${message}`);
 
-                        if(field === "global" && message === "User not authenticated") {
+                        if (field === "global" && message === "User not authenticated") {
                             message = "You must be logged in to add a pet.";
                         }
 
@@ -62,159 +74,137 @@ export default function AddPet() {
             });
     }
 
+
     return (
-        <Form onSubmit={handleSubmit(addPet)}>
+        <div className="add-pet-container">
+            <Form className="add-pet-form" onSubmit={handleSubmit(addPet)}>
 
-            {
-                added &&
-                <div className="alert alert-success alert-dismissible fade show" role="alert">
-                    New pet added successfully!
-                    <button
-                        type="button"
-                        className="btn-close"
-                        data-bs-dismiss="alert"
-                        aria-label="Close"
-                        onClick={() => setAdded(false)}
-                    ></button>
-                </div>
-            }
-            {
-                errors.global &&
-                <div className="alert alert-danger alert-dismissible fade show" role="alert">
-                    {errors.global.message}
-                    <button
-                        type="button"
-                        className="btn-close"
-                        data-bs-dismiss="alert"
-                        aria-label="Close"
-                        onClick={() => clearErrors("global")}
-                    ></button>
-                </div>
-            }
-            <FloatingLabel controlId="name" label="Name" className="mb-3">
-                <Form.Control
-                    type="text"
-                    placeholder="Name"
-                    {...register("name"
-                    //     , {
-                    //     required: "Name is required.",
-                    //     minLength: {
-                    //         value: 2,
-                    //         message: "Name must be at least 2 characters.",
-                    //     },
-                    //     maxLength: {
-                    //         value: 30,
-                    //         message: "Name must be at most 30 characters.",
-                    //     },
-                    //     pattern: {
-                    //         value: /^[A-Z][a-zA-Z]*(?: [a-zA-Z]+)*$/,
-                    //         message: "Name must start with uppercase and contain only letters and spaces",
-                    //     }
-                    // }
-                )}
-                    isInvalid={!!errors.name}
-                />
+                {
+                    added &&
+                    <div className="alert alert-success alert-dismissible fade show" role="alert">
+                        New pet added successfully!
+                        <button
+                            type="button"
+                            className="btn-close"
+                            data-bs-dismiss="alert"
+                            aria-label="Close"
+                            onClick={() => setAdded(false)}
+                        ></button>
+                    </div>
+                }
+                {
+                    errors.global &&
+                    <div className="alert alert-danger alert-dismissible fade show" role="alert">
+                        {errors.global.message}
+                        <button
+                            type="button"
+                            className="btn-close"
+                            data-bs-dismiss="alert"
+                            aria-label="Close"
+                            onClick={() => clearErrors("global")}
+                        ></button>
+                    </div>
+                }
+
+                <FloatingLabel controlId="name" label="Name" className="mb-3">
+                    <Form.Control
+                        type="text"
+                        placeholder="Name"
+                        {...register("name"
+                            , {
+                                required: "Name is required.",
+                                minLength: {
+                                    value: 2,
+                                    message: "Name must be at least 2 characters.",
+                                },
+                                maxLength: {
+                                    value: 30,
+                                    message: "Name must be at most 30 characters.",
+                                },
+                                pattern: {
+                                    value: /^[A-Z][a-zA-Z]*(?: [a-zA-Z]+)*$/,
+                                    message: "Name must start with uppercase and contain only letters and spaces",
+                                }
+                            }
+                        )}
+                        isInvalid={!!errors.name}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                        {errors.name?.message}
+                    </Form.Control.Feedback>
+                </FloatingLabel>
+
+                <FloatingLabel controlId="sex" label="Sex" className="mb-3">
+                    <Form.Select
+                        {...register("sex", {
+                            minLength: {
+                                value: 3,
+                                message: "Sex must be at least 4 characters.",
+                            },
+                            maxLength: {
+                                value: 6,
+                                message: "Sex must be at most 6 characters.",
+                            },
+                            pattern: {
+                                value: /^[A-Z][a-zA-Z]*$/,
+                                message: "Sex must start with uppercase and contain only letters",
+                            }
+                        })}
+                        isInvalid={!!errors.sex}
+                        defaultValue=""
+                    >
+                        <option value="" disabled>Select sex</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </Form.Select>
+                    <Form.Control.Feedback type="invalid">
+                        {errors.sex?.message}
+                    </Form.Control.Feedback>
+                </FloatingLabel>
+
+                <FloatingLabel controlId="birthDate" label="Birthday" className="mb-3">
+                    <Form.Control
+                        type="date"
+                        placeholder="Birthday"
+                        {...register("birthDate", {
+                            required: "Birthday is required."
+                        })}
+                        isInvalid={!!errors.birthDate}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                        {errors.birthDate?.message}
+                    </Form.Control.Feedback>
+                </FloatingLabel>
+
+                <FloatingLabel controlId="photo" label="Photo" className="mb-3">
+                    <Form.Control
+                        type="file"
+                        accept=".png, .jpg, .jpeg"
+                        isInvalid={!!errors.photo}
+                        {...register("photo", {
+                            validate: {
+                                fileValidation: (files) => {
+                                    if (!files || files.length === 0) return true;
+                                    const file = files[0];
+                                    return validateFile(file);
+                                },
+                            },
+                        })}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                        {errors.photo?.message}
+                    </Form.Control.Feedback>
+                </FloatingLabel>
+
                 <Form.Control.Feedback type="invalid">
-                    {errors.name?.message}
+                    {errors.photo?.message}
                 </Form.Control.Feedback>
-            </FloatingLabel>
 
-            <FloatingLabel controlId="species" label="Species" className="mb-3">
-                <Form.Control
-                    type="text"
-                    placeholder="Species"
-                    {...register("species", {
-                        required: "Species is required.",
-                        minLength: {
-                            value: 3,
-                            message: "Species must be at least 3 characters.",
-                        },
-                        maxLength: {
-                            value: 30,
-                            message: "Species must be at most 30 characters.",
-                        },
-                        pattern: {
-                            value: /^[A-Z][a-zA-Z]*(?: [a-zA-Z]+)*$/,
-                            message: "Species must start with uppercase and contain only letters and spaces",
-                        }
-                    })}
-                    isInvalid={!!errors.species}
-                />
-                <Form.Text muted>E.g. Cat, Dog</Form.Text>
-                <Form.Control.Feedback type="invalid">
-                    {errors.species?.message}
-                </Form.Control.Feedback>
-            </FloatingLabel>
 
-            <FloatingLabel controlId="breed" label="Breed" className="mb-3">
-                <Form.Control
-                    type="text"
-                    placeholder="Breed"
-                    {...register("breed", {
-                        minLength: {
-                            value: 3,
-                            message: "Breed must be at least 3 characters.",
-                        },
-                        maxLength: {
-                            value: 30,
-                            message: "Breed must be at most 30 characters.",
-                        },
-                        pattern: {
-                            value: /^[A-Z][a-zA-Z]*(?: [a-zA-Z]+)*$/,
-                            message: "Breed must start with uppercase and contain only letters and spaces",
-                        }
-                    })}
-                    isInvalid={!!errors.breed}
-                />
-                <Form.Text muted >E.g. Siamese, Mixed</Form.Text>
-                <Form.Control.Feedback type="invalid">
-                    {errors.breed?.message}
-                </Form.Control.Feedback>
-            </FloatingLabel>
-
-            <FloatingLabel controlId="furColour" label="Fur Colour" className="mb-3">
-                <Form.Control
-                    type="text"
-                    placeholder="Fur Colour"
-                    {...register("furColour", {
-                        minLength: {
-                            value: 3,
-                            message: "Fur Colour must be at least 3 characters.",
-                        },
-                        maxLength: {
-                            value: 30,
-                            message: "Fur Colour must be at most 30 characters.",
-                        },
-                        pattern: {
-                            value: /^[A-Z][a-zA-Z]*(?: [a-zA-Z]+)*$/,
-                            message: "Fur Colour must start with uppercase and contain only letters and spaces",
-                        }
-                    })}
-                    isInvalid={!!errors.furColour}
-                />
-                <Form.Text muted>E.g Calico, Tabby</Form.Text>
-                <Form.Control.Feedback type="invalid">
-                    {errors.furColour?.message}
-                </Form.Control.Feedback>
-            </FloatingLabel>
-
-            <FloatingLabel controlId="birthDate" label="Birthday" className="mb-3">
-                <Form.Control
-                    type="date"
-                    placeholder="Birthday"
-                    {...register("birthDate", {
-                        required: "Birthday is required."
-                    })}
-                    isInvalid={!!errors.birthDate}
-                />
-                <Form.Control.Feedback type="invalid">
-                    {errors.birthDate?.message}
-                </Form.Control.Feedback>
-            </FloatingLabel>
-
-            <Button type="submit" variant="primary" className="w-100 register-btn">
-                Add
-            </Button>
-        </Form>
+                <Button type="submit" variant="primary" className="w-100 register-btn">
+                    Add
+                </Button>
+            </Form>
+        </div>
     );
 }

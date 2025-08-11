@@ -2,7 +2,7 @@
     width: 45px;
     height: 45px;
     margin: auto;
-    padding: 2px;
+    padding: 5px;
 }
 
 header {
@@ -11,7 +11,7 @@ header {
     justify-content: space-between;
     background-color: #f7f2e1;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
-    max-height: 50px;
+    height: 60px;
 }
 
 .branding {

@@ -46,7 +46,7 @@ export default function Login() {
     return (
 
         <div className="auth-wrapper">
-            <Form onSubmit={handleSubmit(onSubmit)}>
+            <Form className="auth-form" onSubmit={handleSubmit(onSubmit)}>
                 <div className="auth-header">
                     <img src={Logo} alt="Purrsonal Logo" className="auth-logo" />
                 </div>

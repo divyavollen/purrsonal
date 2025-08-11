@@ -14,7 +14,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -34,16 +33,8 @@ public class Pet {
 
     @NotBlank
     @Column
-    @Size(min = 3, max = 30)
-    private String species;
-
-    @Column
-    @Pattern(regexp = "^$|.{3,30}", message = "Must be between 3 and 30 characters")
-    private String breed;
-
-    @Column
-    @Pattern(regexp = "^$|.{2,20}", message = "Must be between 2 and 20 characters")
-    private String furColour;
+    @Size(min = 4, max = 6)
+    private String sex;
 
     @NotNull
     @Column    

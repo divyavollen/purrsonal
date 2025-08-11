@@ -31,9 +31,7 @@ public class PetService {
         
         Pet pet = new Pet();
         pet.setName(petAddRequest.getName());
-        pet.setSpecies(petAddRequest.getSpecies());
-        pet.setBreed(petAddRequest.getBreed());
-        pet.setFurColour(petAddRequest.getFurColour());
+        pet.setSex(petAddRequest.getSex());
         pet.setBirthDate(petAddRequest.getBirthDate());
         pet.setOwner(user);
 

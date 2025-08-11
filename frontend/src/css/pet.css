@@ -1,0 +1,13 @@
+.add-pet-container {
+    background-color: white;
+    height: 100%;
+    width: 100%;
+    align-items: center;
+    margin: auto;
+}
+
+.add-pet-form {
+    display: flex;
+    flex-direction: column;
+    width: 30vw;
+}
