@@ -77,6 +77,16 @@ public class GlobalExceptionHandler {
                 return new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.UNAUTHORIZED);
         }
 
+        @ExceptionHandler(FileValidationException.class)
+        public ResponseEntity<ErrorResponse> handleFileValidationException(FileValidationException ex, HttpServletRequest request) {
+
+                ErrorResponse errorResponse = createErrorResponse(request.getRequestURI(),
+                                List.of(new ApiFieldError("photo", ex.getMessage())),
+                                HttpStatus.PAYLOAD_TOO_LARGE.value());
+
+                return new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.BAD_REQUEST);
+        }
+
         @ExceptionHandler(Exception.class)
         public ResponseEntity<ErrorResponse> handleGenericException(Exception ex, HttpServletRequest request) {
 

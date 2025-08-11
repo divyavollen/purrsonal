@@ -3,8 +3,6 @@ package co.in.vollen.purrsonal.entity;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.hibernate.cache.spi.support.AbstractReadWriteAccess.Item;
-
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Column;

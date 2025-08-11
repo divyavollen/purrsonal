@@ -1,18 +1,18 @@
 export function validateFile(file) {
 
-    const allowedTypes = ["image/png", "image/jpeg"]
-    const maxSizeMB = 10
-    const minSizeKB = 10
+    const allowedTypes = ["image/png", "image/jpeg"];
+    const maxSizeMB = 10;
+    const minSizeKB = 50;
 
     if (!file) {
       return "No file selected.";
     }
   
     if (allowedTypes.length > 0 && !allowedTypes.includes(file.type)) {
-      return "Photo must be a PNG or JPEG image.";
+      return "File must be a PNG or JPEG image.";
     }
   
-    if (maxSizeMB && file.size > maxSizeMB * 1024 * 1024) {
+    if (maxSizeMB && file.size > maxSizeMB * 1024 * 1024)  {
       return `File is too large. Max size is ${maxSizeMB} MB.`;
     }
   

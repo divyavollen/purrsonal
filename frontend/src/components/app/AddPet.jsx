@@ -2,7 +2,7 @@ import React from "react";
 import { Button, FloatingLabel, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import "../../css/pet.css";
-import { validateFile } from "../utils/validate.js";
+import { validateFile } from "../utils/validate";
 
 export default function AddPet() {
 
@@ -19,26 +19,25 @@ export default function AddPet() {
 
     const addPet = (formData) => {
 
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem("token");
 
         console.log(formData)
         const API_URL = import.meta.env.VITE_API_URL;
 
         const formDataObj = new FormData();
 
-        formDataObj.append('name', formData.name);
-        formDataObj.append('sex', formData.sex);
-        formDataObj.append('birthDate', formData.birthDate);
+        formDataObj.append("name", formData.name);
+        formDataObj.append("sex", formData.sex);
+        formDataObj.append("birthDate", formData.birthDate);
 
         if (formData.photo && formData.photo.length > 0) {
-            formDataObj.append('photo', formData.photo[0]);
+            formDataObj.append("photo", formData.photo[0]);
         }
 
         fetch(`${API_URL}/pets/add`, {
 
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`
             },
             body: formDataObj

@@ -2,6 +2,7 @@ package co.in.vollen.purrsonal.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +21,7 @@ public class PetController {
     private final PetService petService;
     
     @PostMapping("/add")
-    public ResponseEntity<String> addPet(@Valid @RequestBody PetAddRequest petAddRequest) {
+    public ResponseEntity<String> addPet(@Valid @ModelAttribute PetAddRequest petAddRequest) {
         petService.addPet(petAddRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
