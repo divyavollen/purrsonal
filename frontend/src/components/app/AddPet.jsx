@@ -180,6 +180,7 @@ export default function AddPet() {
                         type="file"
                         accept=".png, .jpg, .jpeg"
                         isInvalid={!!errors.photo}
+                        className="photo-field"
                         {...register("photo", {
                             validate: {
                                 fileValidation: (files) => {
@@ -197,7 +198,7 @@ export default function AddPet() {
 
                 <Form.Control.Feedback type="invalid">
                     {errors.photo?.message}
-                </Form.Control.Feedback>
+                </Form.Control.Feedback> 
 
 
                 <Button type="submit" variant="primary" className="w-100 register-btn">

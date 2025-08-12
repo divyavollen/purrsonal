@@ -10,4 +10,9 @@
     display: flex;
     flex-direction: column;
     width: 30vw;
+    padding: 30px 20px;
+}
+
+.photo-field {
+    margin-top: 5px !important;
 }
