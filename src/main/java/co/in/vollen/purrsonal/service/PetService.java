@@ -10,6 +10,7 @@ import co.in.vollen.purrsonal.dto.PetAddRequest;
 import co.in.vollen.purrsonal.entity.Pet;
 import co.in.vollen.purrsonal.entity.User;
 import co.in.vollen.purrsonal.exception.FileValidationException;
+import co.in.vollen.purrsonal.exception.PhotoUploadException;
 import co.in.vollen.purrsonal.repository.PetRepository;
 import co.in.vollen.purrsonal.util.AuthUtil;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +22,8 @@ import lombok.extern.slf4j.Slf4j;
 public class PetService {
 
     private final PetRepository petRepository;
+    private final FileUploaderService fileUploaderService;
 
-    //TODO get file sizes from properties file
     private final int MAX_FILE_SIZE_MB = 10 * 1024 * 1024;
     private final int MIN_FILE_SIZE_KB = 50 * 1024;
 
@@ -52,7 +53,6 @@ public class PetService {
         }
 
         log.info("Adding pet: {} for user {}", petAddRequest.getName(), user.getUsername());
-        log.info("Photo size {}", file.isEmpty() ? "0" : file.getSize()/ (1024.0 * 1024.0));
 
         Pet pet = new Pet();
         pet.setName(petAddRequest.getName());
@@ -60,9 +60,16 @@ public class PetService {
         pet.setBirthDate(petAddRequest.getBirthDate());
         pet.setOwner(user);
 
-        //TODO: minio upload logic here
-
         return petRepository.save(pet);
+    }
+
+    public boolean uploadPhoto(MultipartFile file, String username, Long petId, String petName) {
+        try {
+            fileUploaderService.uploadFile(file, username, petId.toString(), petName);
+            return true;
+        } catch (PhotoUploadException e) {
+            return false;
+        }
     }
 
 }

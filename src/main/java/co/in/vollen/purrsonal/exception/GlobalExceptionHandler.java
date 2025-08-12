@@ -14,6 +14,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MultipartException;
 
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
@@ -78,7 +79,8 @@ public class GlobalExceptionHandler {
         }
 
         @ExceptionHandler(FileValidationException.class)
-        public ResponseEntity<ErrorResponse> handleFileValidationException(FileValidationException ex, HttpServletRequest request) {
+        public ResponseEntity<ErrorResponse> handleFileValidationException(FileValidationException ex,
+                        HttpServletRequest request) {
 
                 ErrorResponse errorResponse = createErrorResponse(request.getRequestURI(),
                                 List.of(new ApiFieldError("photo", ex.getMessage())),
@@ -87,11 +89,44 @@ public class GlobalExceptionHandler {
                 return new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.BAD_REQUEST);
         }
 
+        @ExceptionHandler(MultipartException.class)
+        public ResponseEntity<ErrorResponse> handleMultipartException(MultipartException ex,
+                        HttpServletRequest request) {
+
+                ErrorResponse errorResponse = createErrorResponse(request.getRequestURI(),
+                                List.of(new ApiFieldError("photo", ex.getMessage())),
+                                HttpStatus.BAD_REQUEST.value());
+
+                return new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.BAD_REQUEST);
+        }
+
+        @ExceptionHandler(BucketCreationException.class)
+        public ResponseEntity<ErrorResponse> handleBucketCreationException(BucketCreationException ex,
+                        HttpServletRequest request) {
+
+                ErrorResponse errorResponse = createErrorResponse(request.getRequestURI(),
+                                List.of(new ApiFieldError("photo", ex.getMessage())),
+                                HttpStatus.BAD_REQUEST.value());
+
+                return new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.BAD_REQUEST);
+        }
+
+        @ExceptionHandler(PetAddException.class)
+        public ResponseEntity<ErrorResponse> handlePetAddException(PetAddException ex, HttpServletRequest request) {
+                ErrorResponse errorResponse = createErrorResponse(request.getRequestURI(),
+                                List.of(new ApiFieldError("global", ex.getMessage())),
+                                HttpStatus.INTERNAL_SERVER_ERROR.value());
+
+                return new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
         @ExceptionHandler(Exception.class)
         public ResponseEntity<ErrorResponse> handleGenericException(Exception ex, HttpServletRequest request) {
 
+                log.error("Exception occured at {}", request.getRequestURI(), ex);
+
                 ErrorResponse errorResponse = createErrorResponse(request.getRequestURI(),
-                                List.of(new ApiFieldError("global", ex.getMessage())),
+                                List.of(new ApiFieldError("global", "Internal server error. Please try again later.")),
                                 HttpStatus.INTERNAL_SERVER_ERROR.value());
 
                 return new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);

@@ -1,6 +1,9 @@
 up:
 	docker compose --env-file ./env/dev.env -f docker-compose.dev.yml up
 
+upv:
+	docker compose  --verbose --env-file ./env/dev.env -f docker-compose.dev.yml up
+
 down:
 	docker compose -f docker-compose.dev.yml down
 
