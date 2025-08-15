@@ -10,9 +10,30 @@
     display: flex;
     flex-direction: column;
     width: 30vw;
-    padding: 30px 20px;
+    padding: 50px 30px 30px 20px;
 }
 
 .photo-field {
     margin-top: 5px !important;
+}
+
+.add-pet-form .form-control,
+.add-pet-form .form-select,
+.add-pet-form .form-group,
+.add-pet-form .form-label {
+    width: 100%;
+    max-width: 300px;
+}
+
+.add-pet-btn {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px !important;
+    background-color: #c1d8c3 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 4px !important;
+    cursor: pointer !important;
+    font-size: 1.2rem !important;
+    height: 60px !important;
 }

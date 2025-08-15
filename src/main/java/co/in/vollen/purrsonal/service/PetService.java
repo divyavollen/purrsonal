@@ -38,18 +38,22 @@ public class PetService {
         // TODO: Validate logged in user token
 
         MultipartFile file = petAddRequest.getPhoto();
-        String contentType = file.getContentType();
+        boolean photoAdded = file != null && !file.isEmpty();
 
-        if (!file.isEmpty() && file.getSize() < MIN_FILE_SIZE_KB) {
-            throw new FileValidationException("File is too small. Min size is 50KB.");
-        }
+        if (photoAdded) {
+            String contentType = file.getContentType();
 
-        if (!file.isEmpty() && file.getSize() > MAX_FILE_SIZE_MB) {
-            throw new FileValidationException("File is too large. Max size is 10MB.");
-        }
+            if (file.getSize() < MIN_FILE_SIZE_KB) {
+                throw new FileValidationException("File is too small. Min size is 50KB.");
+            }
 
-        if (!Arrays.asList("image/jpeg", "image/png").contains(contentType)) {
-            throw new FileValidationException("File must be a PNG or JPEG image.");
+            if (file.getSize() > MAX_FILE_SIZE_MB) {
+                throw new FileValidationException("File is too large. Max size is 10MB.");
+            }
+
+            if (!Arrays.asList("image/jpeg", "image/png").contains(contentType)) {
+                throw new FileValidationException("File must be a PNG or JPEG image.");
+            }
         }
 
         log.info("Adding pet: {} for user {}", petAddRequest.getName(), user.getUsername());

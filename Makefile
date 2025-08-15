@@ -7,6 +7,12 @@ upv:
 down:
 	docker compose -f docker-compose.dev.yml down
 
+rebuild:
+	docker compose --env-file ./env/dev.env -f docker-compose.dev.yml up -d --no-deps --build $(svc)
+
+stop:
+	docker compose --env-file ./env/dev.env -f docker-compose.dev.yml stop $(svc)
+
 builddb:
 	docker buildx build -t occupantangler/purrsonal_db:latest -f ./db/Dockerfile ./db
 

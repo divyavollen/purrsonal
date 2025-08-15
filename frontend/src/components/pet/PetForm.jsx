@@ -4,7 +4,13 @@ import { useForm } from "react-hook-form";
 import "../../css/pet.css";
 import { validateFile } from "../utils/validate";
 
-export default function AddPet({ setAddSuccess, setErrorMessage, closeForm }) {
+export default function PetForm({
+    mode,
+    initialData,
+    onSubmit,
+    onSuccess,
+    submitLabel
+}) {
 
     const {
         register,
@@ -13,14 +19,13 @@ export default function AddPet({ setAddSuccess, setErrorMessage, closeForm }) {
         setError,
         clearErrors,
         reset
-    } = useForm();
+    } = useForm({
+        defaultValues: initialData,
+    });
 
-    const addPet = (formData) => {
+    const isView = mode === "view"
 
-        const token = localStorage.getItem("token");
-
-        console.log(formData)
-        const API_URL = import.meta.env.VITE_API_URL;
+    const onFormSubmit = async (formData) => {
 
         const formDataObj = new FormData();
 
@@ -32,78 +37,78 @@ export default function AddPet({ setAddSuccess, setErrorMessage, closeForm }) {
             formDataObj.append("photo", formData.photo[0]);
         }
 
-
         try {
-            fetch(`${API_URL}/pets/add`, {
+            await onSubmit(formDataObj);
 
-                method: "POST",
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                },
-                body: formDataObj
-            })
-                .then(async response => {
-                    if (response.ok) {
-                        setAddSuccess();
-                        closeForm();
-                        reset();
-                        clearErrors();
-                    } else {
-                        const data = await response.json();
-                        const firstErrorsByField = {};
+            if (onSuccess) onSuccess();
 
-                        if (data.errors)
-                            data.errors.forEach(({ field, message }) => {
-                                if (!firstErrorsByField[field]) {
-                                    firstErrorsByField[field] = message;
-                                }
-                            });
-
-                        Object.entries(firstErrorsByField).forEach(([field, message]) => {
-                            console.error(`Error in field ${field}: ${message}`);
-
-                            if (field === "global") {
-                                setErrorMessage(message);
-                            }
-                            else {
-                                setError(field, { type: "server", message });
-                            }
-                        });
-
-                        throw new Error("Failed to add pet");
-                    }
-
-                });
+            if (mode === "add") {
+                reset();
+                clearErrors();
+            }
         }
         catch (error) {
-            setErrorMessage("Internal server error");
-            throw new Error("Internal server error");
+
+            if (error.errors && Array.isArray(error.errors)) {
+                const firstErrorsByField = {};
+                error.errors.forEach(({ field, message }) => {
+                    if (!firstErrorsByField[field]) firstErrorsByField[field] = message;
+                });
+
+                Object.entries(firstErrorsByField).forEach(([field, message]) => {
+
+                    if (field === "global" && message === "User not authenticated") {
+                        message = "You must be logged in to add a pet.";
+                    }
+                    setError(field, { type: "server", message });
+                });
+            } else {
+                setError("global", { type: "server", message: error.message || "Unknown error occurred" });
+            }
         }
+
     }
 
     return (
+        <div className="pet-form-container">
+            <Form className="pet-form" onSubmit={handleSubmit(onFormSubmit)}>
 
-        <div className="add-pet-container">
-            <Form className="add-pet-form" onSubmit={handleSubmit(addPet)}>
-                <FloatingLabel controlId="name" label="Name" className="mb-3" >
+                {
+                    errors.global &&
+                    <div className="alert alert-danger alert-dismissible fade show" role="alert">
+                        {errors.global.message}
+                        <button
+                            type="button"
+                            className="btn-close"
+                            data-bs-dismiss="alert"
+                            aria-label="Close"
+                            onClick={() => clearErrors("global")}
+                        ></button>
+                    </div>
+                }
+
+                <FloatingLabel controlId="name" label="Name" className="mb-3">
                     <Form.Control
                         type="text"
                         placeholder="Name"
-                        {...register("name", {
-                            required: "Name is required.",
-                            minLength: {
-                                value: 2,
-                                message: "Name must be at least 2 characters.",
-                            },
-                            maxLength: {
-                                value: 30,
-                                message: "Name must be at most 30 characters.",
-                            },
-                            pattern: {
-                                value: /^[A-Z][a-zA-Z]*(?: [a-zA-Z]+)*$/,
-                                message: "Name must start with uppercase and contain only letters and spaces",
+                        readOnly={isView}
+                        {...register("name"
+                            , {
+                                required: "Name is required.",
+                                minLength: {
+                                    value: 2,
+                                    message: "Name must be at least 2 characters.",
+                                },
+                                maxLength: {
+                                    value: 30,
+                                    message: "Name must be at most 30 characters.",
+                                },
+                                pattern: {
+                                    value: /^[A-Z][a-zA-Z]*(?: [a-zA-Z]+)*$/,
+                                    message: "Name must start with uppercase and contain only letters and spaces",
+                                }
                             }
-                        })}
+                        )}
                         isInvalid={!!errors.name}
                     />
                     <Form.Control.Feedback type="invalid">
@@ -129,6 +134,7 @@ export default function AddPet({ setAddSuccess, setErrorMessage, closeForm }) {
                         })}
                         isInvalid={!!errors.sex}
                         defaultValue=""
+                        readOnly={isView}
                     >
                         <option value="" disabled>Select sex</option>
                         <option value="Male">Male</option>
@@ -147,6 +153,7 @@ export default function AddPet({ setAddSuccess, setErrorMessage, closeForm }) {
                             required: "Birthday is required."
                         })}
                         isInvalid={!!errors.birthDate}
+                        readOnly={isView}
                     />
                     <Form.Control.Feedback type="invalid">
                         {errors.birthDate?.message}
@@ -178,11 +185,12 @@ export default function AddPet({ setAddSuccess, setErrorMessage, closeForm }) {
                     {errors.photo?.message}
                 </Form.Control.Feedback>
 
-                <Button type="submit" variant="primary" className="w-100 add-pet-btn">
-                    Add
-                </Button>
+                {
+                    isView && <Button type="submit" variant="primary" className="w-100 register-btn">
+                        {submitLabel}
+                    </Button>
+                }
             </Form>
         </div>
-
     );
 }

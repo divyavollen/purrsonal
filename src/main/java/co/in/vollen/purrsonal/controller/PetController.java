@@ -39,15 +39,18 @@ public class PetController {
                 .buildAndExpand(id)
                 .toUri();
 
-        boolean photoUploaded = petService.uploadPhoto(petAddRequest.getPhoto(), savedPet.getOwner().getUsername(), id, savedPet.getName());
+        if (petAddRequest.getPhoto() != null && !petAddRequest.getPhoto().isEmpty()) {
+            
+            boolean photoUploaded = petService.uploadPhoto(petAddRequest.getPhoto(), savedPet.getOwner().getUsername(),
+                    id, savedPet.getName());
 
-        if (!photoUploaded) {
+            if (!photoUploaded) {
 
-            return ResponseEntity.created(location).body(Map.of(
-                    "message", "Pet added successfully but photo upload failed",
-                    "petId", id));
+                return ResponseEntity.created(location).body(Map.of(
+                        "message", "Pet added successfully but photo upload failed",
+                        "petId", id));
+            }
         }
-
         return ResponseEntity.created(location).body(Map.of(
                 "message", "Pet added successfully",
                 "petId", id));
