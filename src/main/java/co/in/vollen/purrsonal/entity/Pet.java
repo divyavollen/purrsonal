@@ -16,10 +16,14 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Entity
 @Table(name = "pets")
 @Data
+@ToString(exclude = "owner")
+@EqualsAndHashCode(exclude = "owner")
 public class Pet {
 
     @Id
@@ -27,21 +31,18 @@ public class Pet {
     private Long id;
 
     @NotBlank
-    @Column
     @Size(min = 2, max = 30)
     private String name;
 
-    @NotBlank
-    @Column
-    @Size(min = 4, max = 6)
     private String sex;
 
     @NotNull
-    @Column    
     private LocalDate birthDate;
 
+    private String imageURL;
+
     @ManyToOne
-    @JoinColumn(name="userid", nullable=false)
+    @JoinColumn(name = "userid", nullable = false)
     @JsonBackReference
     private User owner;
 }

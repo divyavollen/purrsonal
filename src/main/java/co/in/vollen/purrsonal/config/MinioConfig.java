@@ -29,6 +29,9 @@ public class MinioConfig {
     @Value("${minio.bucketName}")
     private String bucketName;
 
+    @Value("${minio.external-url}")
+    private String externalURL;
+
     @Bean
     public MinioClient minioClient() {
         return MinioClient.builder()

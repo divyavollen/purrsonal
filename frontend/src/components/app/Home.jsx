@@ -1,20 +1,54 @@
 import React from "react";
-import AddPet from "./AddPet";
+import AddPet from "../pet/AddPet"
+import PetList from "../pet/PetList";
 import "../../css/home.css";
+import { handleApiFormErrors } from "../utils/error";
 
 export default function Home() {
 
     const [showAddForm, setShowAddForm] = React.useState(false);
     const [addSuccess, setAddSuccess] = React.useState(false);
     const [globalErr, setGlobalErr] = React.useState("");
+    const [pets, setPets] = React.useState([]);
 
-    function setError(errorMessage) {
+    const API_URL = import.meta.env.VITE_API_URL;
+    const token = localStorage.getItem("token");
+
+    React.useEffect(() => {
+        console.log("useEffect triggered");
+        getPets();
+    }, [])
+
+    function setGlobalErrorMessage(errorMessage) {
 
         if (errorMessage === "User not authenticated") {
-            setGlobalErr("You must be logged in to perform this action.");
+            setGlobalErr("Please log in to continue.");
         }
         else {
             setGlobalErr(errorMessage);
+        }
+    }
+
+    async function getPets() {
+
+        console.log("getPets triggered");
+        const response = await fetch(`${API_URL}/pets`, {
+
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            },
+        });
+
+        const petList = await response.json();
+        console.log(petList);
+
+        if (response.ok) {
+            setPets(petList);
+        }
+        else {
+            if (petList.errors)
+                handleApiFormErrors(petList.errors, { setGlobalErrorMessage });
         }
     }
 
@@ -46,6 +80,7 @@ export default function Home() {
                     ></button>
                 </div>
             }
+            <PetList pets={pets} />
             {!showAddForm && (
                 <div className="add-pet-card" role="button"
                     tabIndex={0}
@@ -64,8 +99,9 @@ export default function Home() {
                     </button>
                     <AddPet
                         setAddSuccess={() => setAddSuccess(true)}
-                        setErrorMessage={setError} 
-                        closeForm={() => setShowAddForm(false)}/>
+                        setGlobalErrorMessage={setGlobalErrorMessage}
+                        closeForm={() => setShowAddForm(false)}
+                        onPetAdded={getPets} />
                 </div>
             }
 

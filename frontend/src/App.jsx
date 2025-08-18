@@ -4,7 +4,7 @@ import Register from "./components/auth/Register";
 import Login from "./components/auth/Login";
 import Home from "./components/app/Home";
 import HomeLayout from "./components/layout/HomeLayout";
-import AddPet from "./components/app/AddPet";
+import AddPet from "./components/pet/AddPet";
 
 export default function App() {
     return (

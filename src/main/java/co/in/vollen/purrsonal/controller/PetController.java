@@ -1,9 +1,11 @@
 package co.in.vollen.purrsonal.controller;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,13 +18,22 @@ import co.in.vollen.purrsonal.exception.PetAddException;
 import co.in.vollen.purrsonal.service.PetService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/pets")
+@Slf4j
 public class PetController {
 
     private final PetService petService;
+
+    @GetMapping
+    public ResponseEntity<?> getAllPets() {
+        List<Pet> pets = petService.getAllPetsForUser();
+        log.info("Pets {} ", pets);
+        return ResponseEntity.ok(pets);
+    }
 
     @PostMapping("/add")
     public ResponseEntity<?> addPet(@Valid @ModelAttribute PetAddRequest petAddRequest) {
@@ -40,7 +51,7 @@ public class PetController {
                 .toUri();
 
         if (petAddRequest.getPhoto() != null && !petAddRequest.getPhoto().isEmpty()) {
-            
+
             boolean photoUploaded = petService.uploadPhoto(petAddRequest.getPhoto(), savedPet.getOwner().getUsername(),
                     id, savedPet.getName());
 
@@ -55,8 +66,4 @@ public class PetController {
                 "message", "Pet added successfully",
                 "petId", id));
     }
-
-    // public ResponseEntity<String> getPet(Long id) {
-    // return ResponseEntity.ok("Pet details for id: " + id);
-    // }
 }

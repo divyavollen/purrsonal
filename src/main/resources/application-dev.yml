@@ -26,3 +26,4 @@ minio:
   secretKey: ${MINIO_PASSWORD}
   endpoint: ${MINIO_HOST}:${MINIO_PORT}
   bucketName: ${MINIO_BUCKET}
+  external-url: http://localhost:9000

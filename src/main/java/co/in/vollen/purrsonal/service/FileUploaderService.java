@@ -7,8 +7,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import co.in.vollen.purrsonal.config.MinioConfig;
 import co.in.vollen.purrsonal.exception.PhotoUploadException;
+import co.in.vollen.purrsonal.util.AuthUtil;
+import io.minio.GetObjectArgs;
+import io.minio.ListObjectsArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
+import io.minio.Result;
+import io.minio.messages.Item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,7 +25,7 @@ public class FileUploaderService {
     private final MinioClient minioClient;
     private final MinioConfig minioConfig;
 
-    public void uploadFile(MultipartFile file, String username, String petId, String petName) {
+    public String uploadFile(MultipartFile file, String username, String petId, String petName) {
 
         try (InputStream inputStream = file.getInputStream()) {
 
@@ -44,6 +49,9 @@ public class FileUploaderService {
                             .contentType(file.getContentType())
                             .build());
 
+            String imageUrl = minioConfig.getExternalURL() + "/" + minioConfig.getBucketName() + "/" + filename;
+            return imageUrl;
+            
         } catch (Exception e) {
             log.error("Failed to upload photo: {}", e);
             throw new PhotoUploadException("Failed to upload photo", e);

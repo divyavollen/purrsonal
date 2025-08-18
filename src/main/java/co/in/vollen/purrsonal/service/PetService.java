@@ -1,6 +1,8 @@
 package co.in.vollen.purrsonal.service;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.stereotype.Service;
@@ -69,11 +71,31 @@ public class PetService {
 
     public boolean uploadPhoto(MultipartFile file, String username, Long petId, String petName) {
         try {
-            fileUploaderService.uploadFile(file, username, petId.toString(), petName);
+            String imageUrl = fileUploaderService.uploadFile(file, username, petId.toString(), petName);
+            updatePetImageUrl(petId, imageUrl);
             return true;
         } catch (PhotoUploadException e) {
             return false;
         }
+    }
+
+    public void updatePetImageUrl(Long petId, String imageUrl) {
+
+        Optional<Pet> petOpt = petRepository.findById(petId);
+
+        if (petOpt.isPresent()) {
+            Pet pet = petOpt.get();
+            pet.setImageURL(imageUrl);
+            petRepository.save(pet);
+        } else {
+            log.warn("Pet with id {} not found when updating image URL", petId);
+        }
+    }
+
+    public List<Pet> getAllPetsForUser() {
+
+        Long id = AuthUtil.getCurrentUserId();
+        return petRepository.getAllByOwnerId(id);
     }
 
 }

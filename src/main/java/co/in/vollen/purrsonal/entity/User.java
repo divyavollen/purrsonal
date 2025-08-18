@@ -18,10 +18,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Entity
 @Table(name = "users")
 @Data
+@ToString(exclude = "pets")
 @EqualsAndHashCode(exclude = "pets")
 public class User {
 
