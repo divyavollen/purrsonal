@@ -40,9 +40,9 @@ export default function PetList({ pets }) {
     )
 
     return (
-        <>
-            <p>Your Pets</p>
+        <div className="pet-list-wrapper">
+            <h2 className="pet-list-title">Your Pets</h2>
             <div className="pet-list-container">{listItems}</div>
-        </>
+        </div>
     )
 }

@@ -3,6 +3,7 @@ import AddPet from "../pet/AddPet"
 import PetList from "../pet/PetList";
 import "../../css/home.css";
 import { handleApiFormErrors } from "../utils/error";
+import { IoMdClose } from "react-icons/io";
 
 export default function Home() {
 
@@ -80,30 +81,35 @@ export default function Home() {
                     ></button>
                 </div>
             }
-            <PetList pets={pets} />
-            {!showAddForm && (
-                <div className="add-pet-card" role="button"
-                    tabIndex={0}
-                    onClick={() => setShowAddForm(true)}
-                >
-                    + Add Pet
+            <div className="pet-container">
+                <div>
+                    <PetList pets={pets} />
+
+                    {!showAddForm && (
+                        <div className="add-pet-card" role="button"
+                            tabIndex={0}
+                            onClick={() => setShowAddForm(true)}
+                        >
+                            + Add Pet
+                        </div>
+                    )}
                 </div>
-            )}
-            {showAddForm &&
-                <div className="add-pet-form-card">
-                    <button
-                        onClick={() => setShowAddForm(false)}
-                        className="btn btn-outline-secondary mb-3 close-add-pet"
-                    >
-                        ✕
-                    </button>
-                    <AddPet
-                        setAddSuccess={() => setAddSuccess(true)}
-                        setGlobalErrorMessage={setGlobalErrorMessage}
-                        closeForm={() => setShowAddForm(false)}
-                        onPetAdded={getPets} />
-                </div>
-            }
+                {showAddForm &&
+                    <div className="add-pet-form-card">
+                        <button
+                            onClick={() => setShowAddForm(false)}
+                            className="btn btn-outline-secondary mb-3 close-add-pet"
+                        >
+                            <IoMdClose />
+                        </button>
+                        <AddPet
+                            setAddSuccess={() => setAddSuccess(true)}
+                            setGlobalErrorMessage={setGlobalErrorMessage}
+                            closeForm={() => setShowAddForm(false)}
+                            onPetAdded={getPets} />
+                    </div>
+                }
+            </div>
 
         </main >
     );

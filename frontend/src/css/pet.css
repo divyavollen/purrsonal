@@ -1,30 +1,95 @@
-.add-pet-container {
-    background-color: white;
-    height: 100%;
-    width: 100%;
-    align-items: center;
-    margin: auto;
+/* Layout Containers */
+.pet-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 2rem;
+    padding: 2rem;
 }
 
+/* Left Column: Pet List */
+.pet-list-container {
+    max-height: calc(4 * 108px);
+    overflow-y: auto;
+    width: 360px;
+}
+
+.pet-list-title {
+    margin: 0;
+    padding-bottom: 1rem;
+}
+
+/* Pet & Add Pet Cards */
+.pet-card,
+.add-pet-card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    max-width: 300px;
+    margin: 16px;
+    background-color: white;
+    cursor: pointer;
+    height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;/
+}
+
+.pet-card:hover,
+.add-pet-card:hover {
+    background-color: #f3f6f4;
+}
+
+/* Add Pet Form Card */
+.add-pet-form-card {
+    position: relative;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    margin-top: 0;
+    padding: 20px;
+    background-color: white;
+}
+
+/* Close Button */
+.close-add-pet {
+    border: none;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    font-size: 1.25rem;
+    color: #333;
+    cursor: pointer;
+}
+
+/* Add Pet Form */
 .add-pet-form {
     display: flex;
     flex-direction: column;
-    width: 30vw;
-    padding: 50px 30px 30px 20px;
-}
-
-.photo-field {
-    margin-top: 5px !important;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 40px 30px 30px;
 }
 
 .add-pet-form .form-control,
-.add-pet-form .form-select,
+.add-pet-form .form-select {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 15px;
+}
+
 .add-pet-form .form-group,
 .add-pet-form .form-label {
     width: 100%;
-    max-width: 300px;
+    max-width: 100%;
 }
 
+/* File Upload Field */
+.photo-field {
+    margin-top: 5px;
+}
+
+/* Add Pet Button */
 .add-pet-btn {
     width: 100%;
     max-width: 300px;
@@ -38,33 +103,7 @@
     height: 60px !important;
 }
 
-.add-pet-card,
-.pet-card {
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-    padding: 20px;
-    max-width: 300px;
-    margin: 16px;
-}
-
-.add-pet-form-card {
-    position: relative;
-    width: 100%;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-    max-width: 350px;
-}
-
-.close-add-pet {
-    border: none !important;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: transparent;
-    font-size: 1.25rem;
-    line-height: 1;
-    color: #333;
-    cursor: pointer;
-}
-
+/* Pet Photo and Icon */
 .pet-photo {
     width: 50px;
     height: 50px;
@@ -72,12 +111,6 @@
     margin-right: 10px;
     background: #f3f6f4;
     padding: 2px;
-}
-
-.pet-list-container {
-    max-height: calc(4 * 108px);
-    overflow-y: auto;
-    width: 360px;
 }
 
 .gender-icon {
@@ -88,6 +121,7 @@
     margin-left: 5px;
 }
 
+/* Pet Name Styling */
 .pet-name {
     margin: 2px;
 }
