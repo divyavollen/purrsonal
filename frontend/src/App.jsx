@@ -5,8 +5,10 @@ import Login from "./components/auth/Login";
 import Home from "./components/app/Home";
 import HomeLayout from "./components/layout/HomeLayout";
 import AddPet from "./components/pet/AddPet";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 export default function App() {
+
     return (
         <BrowserRouter>
             <Routes>
@@ -14,8 +16,9 @@ export default function App() {
                 <Route path="/login" element={<Login />} />
 
                 <Route path="/" element={<HomeLayout />}>
-                    <Route index element={<Home />} />
-                    <Route path="add" element={<AddPet />} />
+                    <Route index element={<ProtectedRoute>
+                        <Home />
+                    </ProtectedRoute>} />
                 </Route>
             </Routes>
         </BrowserRouter>

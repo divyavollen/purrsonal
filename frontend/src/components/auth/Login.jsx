@@ -3,11 +3,12 @@ import { Form, FloatingLabel, Button } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import "../../css/auth.css";
 import Logo from "/src/images/logo.png";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function Login() {
 
     const navigate = useNavigate();
+    const location = useLocation();
 
     const {
         register,
@@ -16,6 +17,21 @@ export default function Login() {
         setError,
         clearErrors
     } = useForm();
+
+    React.useEffect(() => {
+        if (location.state?.message) {
+            setError("global", {
+                type: "manual",
+                message: location.state.message,
+            });
+        }
+    }, [location.state, setError]);
+
+    const onLoginSuccess = () => {
+        
+        const from = location.state?.from?.pathname || "/";
+        navigate(from, { replace: true });
+    };
 
     const onSubmit = formData => {
         console.log(formData);
@@ -31,7 +47,7 @@ export default function Login() {
             console.log(data);
             if (response.ok) {
                 localStorage.setItem("token", data.token);
-                navigate("/");
+                onLoginSuccess();
             } else {
                 console.error("Registration failed:", data.errors);
                 data.errors.forEach(({ field, message }) => {
