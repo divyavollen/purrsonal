@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,6 +11,7 @@ import co.in.vollen.purrsonal.dto.PetAddRequest;
 import co.in.vollen.purrsonal.entity.Pet;
 import co.in.vollen.purrsonal.entity.User;
 import co.in.vollen.purrsonal.exception.FileValidationException;
+import co.in.vollen.purrsonal.exception.PetNotFoundException;
 import co.in.vollen.purrsonal.exception.PhotoUploadException;
 import co.in.vollen.purrsonal.repository.PetRepository;
 import co.in.vollen.purrsonal.util.AuthUtil;
@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 public class PetService {
 
     private final PetRepository petRepository;
-    private final FileUploaderService fileUploaderService;
+    private final MinioService minioService;
 
     private final int MAX_FILE_SIZE_MB = 10 * 1024 * 1024;
     private final int MIN_FILE_SIZE_KB = 50 * 1024;
@@ -32,12 +32,6 @@ public class PetService {
     public Pet addPet(PetAddRequest petAddRequest) {
 
         User user = AuthUtil.getCurrentUser();
-
-        if (user == null) {
-            log.error("User not authenticated");
-            throw new AuthenticationCredentialsNotFoundException("User not authenticated");
-        }
-        // TODO: Validate logged in user token
 
         MultipartFile file = petAddRequest.getPhoto();
         boolean photoAdded = file != null && !file.isEmpty();
@@ -71,7 +65,7 @@ public class PetService {
 
     public boolean uploadPhoto(MultipartFile file, String username, Long petId, String petName) {
         try {
-            String imageUrl = fileUploaderService.uploadFile(file, username, petId.toString(), petName);
+            String imageUrl = minioService.uploadFile(file, username, petId.toString(), petName);
             updatePetImageUrl(petId, imageUrl);
             return true;
         } catch (PhotoUploadException e) {
@@ -79,7 +73,7 @@ public class PetService {
         }
     }
 
-    public void updatePetImageUrl(Long petId, String imageUrl) {
+    private void updatePetImageUrl(Long petId, String imageUrl) {
 
         Optional<Pet> petOpt = petRepository.findById(petId);
 
@@ -96,6 +90,23 @@ public class PetService {
 
         Long id = AuthUtil.getCurrentUserId();
         return petRepository.getAllByOwnerId(id);
+    }
+
+    public void deletePet(Long id, String name) {
+
+        User currentUser = AuthUtil.getCurrentUser();
+
+        Pet pet = petRepository.findByIdAndNameAndOwnerId(id, name, currentUser.getId())
+                .orElseThrow(
+                        () -> new PetNotFoundException(String.format("Pet with name %s not found for user %s", name,
+                                currentUser.getUsername())));
+
+        if (pet.getImageURL() != null)
+            minioService.deleteFile(currentUser.getUsername(), id.toString(), name, pet.getImageURL());
+            
+        log.info("Deleting pet {}", pet);
+
+        petRepository.delete(pet);
     }
 
 }

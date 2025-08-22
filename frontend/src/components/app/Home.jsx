@@ -10,6 +10,7 @@ export default function Home() {
     const [showAddForm, setShowAddForm] = React.useState(false);
     const [addSuccess, setAddSuccess] = React.useState(false);
     const [globalErr, setGlobalErr] = React.useState("");
+    const [successMsg, setSuccessMsg] = React.useState("");
     const [pets, setPets] = React.useState([]);
 
     const API_URL = import.meta.env.VITE_API_URL;
@@ -33,7 +34,7 @@ export default function Home() {
     async function getPets() {
 
         console.log("getPets triggered");
-        const response = await fetch(`${API_URL}/pets`, {
+        const response = await fetch(`${API_URL}/pet/all`, {
 
             method: "GET",
             headers: {
@@ -56,15 +57,15 @@ export default function Home() {
     return (
         <main>
             {
-                addSuccess &&
+                successMsg &&
                 <div className="alert alert-success alert-dismissible fade show" role="alert">
-                    New pet added successfully!
+                    {successMsg}
                     <button
                         type="button"
                         className="btn-close"
                         data-bs-dismiss="alert"
                         aria-label="Close"
-                        onClick={() => setAddSuccess(false)}
+                        onClick={() => setSuccessMsg("")}
                     ></button>
                 </div>
             }
@@ -83,7 +84,10 @@ export default function Home() {
             }
             <div className="pet-container">
                 <div>
-                    <PetList pets={pets} />
+                    <PetList
+                        pets={pets}
+                        setSuccessMsg={setSuccessMsg}
+                        onPetDeleted={getPets} />
 
                     {!showAddForm && (
                         <div className="add-pet-card" role="button"
@@ -104,6 +108,7 @@ export default function Home() {
                         </button>
                         <AddPet
                             setAddSuccess={() => setAddSuccess(true)}
+                            setSuccessMsg={setSuccessMsg}
                             setGlobalErrorMessage={setGlobalErrorMessage}
                             closeForm={() => setShowAddForm(false)}
                             onPetAdded={getPets} />

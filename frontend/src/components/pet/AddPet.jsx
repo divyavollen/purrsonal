@@ -4,17 +4,30 @@ import { useForm } from "react-hook-form";
 import "../../css/pet.css";
 import { validateFile } from "../utils/validate";
 import { handleApiFormErrors } from "../utils/error";
+import Paw from "/src/images/paw.png"
+import ReactFileReader from "react-file-reader";
+import { FiCamera } from "react-icons/fi";
 
-export default function AddPet({ setAddSuccess, setGlobalErrorMessage, closeForm, onPetAdded }) {
+export default function AddPet({ setAddSuccess, setGlobalErrorMessage, closeForm, onPetAdded, setSuccessMsg }) {
 
     const {
         register,
         handleSubmit,
         formState: { errors },
+        setValue,
         setError,
         clearErrors,
         reset
     } = useForm();
+
+    const [preview, setPreview] = React.useState(Paw);
+    const [uploadedFile, setUploadedFile] = React.useState(null);
+
+    const handleFiles = (files) => {
+        setPreview(files.base64);
+        setUploadedFile(files.fileList[0]);
+        setValue("photo", files.fileList[0]); 
+    };
 
     const addPet = (formData) => {
 
@@ -29,12 +42,12 @@ export default function AddPet({ setAddSuccess, setGlobalErrorMessage, closeForm
         formDataObj.append("sex", formData.sex);
         formDataObj.append("birthDate", formData.birthDate);
 
-        if (formData.photo && formData.photo.length > 0) {
-            formDataObj.append("photo", formData.photo[0]);
+        if (uploadedFile) {
+            formDataObj.append("photo", uploadedFile);
         }
 
         try {
-            fetch(`${API_URL}/pets/add`, {
+            fetch(`${API_URL}/pet/add`, {
 
                 method: "POST",
                 headers: {
@@ -46,6 +59,7 @@ export default function AddPet({ setAddSuccess, setGlobalErrorMessage, closeForm
                     if (response.ok) {
                         console.log("New pet " + formData.name + "added!")
                         setAddSuccess();
+                        setSuccessMsg("New pet added succesfully!");
                         closeForm();
                         reset();
                         onPetAdded();
@@ -68,6 +82,30 @@ export default function AddPet({ setAddSuccess, setGlobalErrorMessage, closeForm
 
         <div className="add-pet-container">
             <Form className="add-pet-form" onSubmit={handleSubmit(addPet)}>
+
+                <ReactFileReader
+                    fileTypes={[".png", ".jpg"]}
+                    multipleFiles={false}
+                    base64={true}
+                    handleFiles={handleFiles}
+                >
+                    <input type="hidden" {...register("photo")} />
+                    <div className="pet-photo-container">
+                        <h2>Add Pet</h2>
+                        <div className="preview-container">
+                            <img src={preview} alt="Pet Photo" />
+
+                            <div className="camera-icon-wrapper">
+                                <FiCamera size={30} />
+                            </div>
+
+                        </div>
+                    </div>
+                </ReactFileReader>
+                <Form.Control.Feedback type="invalid" className={errors.photo ? "d-block" : ""}>
+                    {errors.photo?.message}
+                </Form.Control.Feedback>
+
                 <FloatingLabel controlId="name" label="Name" className="mb-3" >
                     <Form.Control
                         type="text"
@@ -135,31 +173,6 @@ export default function AddPet({ setAddSuccess, setGlobalErrorMessage, closeForm
                         {errors.birthDate?.message}
                     </Form.Control.Feedback>
                 </FloatingLabel>
-
-                <FloatingLabel controlId="photo" label="Photo" className="mb-3">
-                    <Form.Control
-                        type="file"
-                        accept=".png, .jpg, .jpeg"
-                        isInvalid={!!errors.photo}
-                        className="photo-field"
-                        {...register("photo", {
-                            validate: {
-                                fileValidation: (files) => {
-                                    if (!files || files.length === 0) return true;
-                                    const file = files[0];
-                                    return validateFile(file);
-                                },
-                            },
-                        })}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                        {errors.photo?.message}
-                    </Form.Control.Feedback>
-                </FloatingLabel>
-
-                <Form.Control.Feedback type="invalid">
-                    {errors.photo?.message}
-                </Form.Control.Feedback>
 
                 <Button type="submit" variant="primary" className="w-100 add-pet-btn">
                     Add

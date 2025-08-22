@@ -26,7 +26,6 @@ public class JwtService {
         return JWT.create()
                 .withIssuer("Purrsonal App")
                 .withSubject(username)
-                .withClaim("username", username)
                 .withIssuedAt(Instant.now())
                 .withExpiresAt(Instant.now().plusSeconds(3600)) // Token valid for 1 hour
                 .sign(Algorithm.HMAC256(SECRET));
@@ -38,7 +37,7 @@ public class JwtService {
                 .withIssuer("Purrsonal App")
                 .build().verify(token);
 
-        String username = jwt.getClaim("username").asString();
+        String username = jwt.getSubject();
         return userDetailsService.loadUserByUsername(username);
     }
 
