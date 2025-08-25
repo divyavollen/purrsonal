@@ -8,7 +8,10 @@ import org.springframework.web.multipart.MultipartFile;
 import co.in.vollen.purrsonal.config.MinioConfig;
 import co.in.vollen.purrsonal.exception.FileDeleteException;
 import co.in.vollen.purrsonal.exception.PhotoUploadException;
+import io.minio.CopyObjectArgs;
+import io.minio.CopySource;
 import io.minio.MinioClient;
+import io.minio.ObjectWriteResponse;
 import io.minio.PutObjectArgs;
 import io.minio.RemoveObjectArgs;
 import lombok.RequiredArgsConstructor;
@@ -68,5 +71,32 @@ public class MinioService {
             log.error("Failed to delete pet photo", e);
             throw new FileDeleteException("Failed to delete pet photo");
         }
+    }
+
+    public String renameFile(String username, String petId, String petOldName, String petNewName, String url) {
+
+        String extension = url.contains(".") ? url.substring(url.lastIndexOf('.') + 1) : "";
+        String oldFilename = String.format("%s/%s-%s.%s", username, petId, petOldName, extension);
+        String newFilename = String.format("%s/%s-%s.%s", username, petId, petNewName, extension);
+
+        log.info("old name {} new name {}", oldFilename, newFilename);
+        try {
+            minioClient.copyObject(
+                    CopyObjectArgs.builder()
+                            .bucket(minioConfig.getBucketName())
+                            .object(newFilename)
+                            .source(CopySource.builder()
+                                    .bucket(minioConfig.getBucketName())
+                                    .object(oldFilename)
+                                    .build())
+                            .build());
+
+        } catch (Exception e) {
+            log.error("Failed to delete pet photo", e);
+            throw new FileDeleteException("Failed to delete pet photo");
+        }
+
+        String imageUrl = minioConfig.getExternalURL() + "/" + minioConfig.getBucketName() + "/" + newFilename;
+        return imageUrl;
     }
 }

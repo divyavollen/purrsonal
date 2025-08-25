@@ -15,6 +15,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import co.in.vollen.purrsonal.dto.PetAddRequest;
 import co.in.vollen.purrsonal.dto.PetDeleteRequest;
+import co.in.vollen.purrsonal.dto.PetUpdateRequest;
 import co.in.vollen.purrsonal.entity.Pet;
 import co.in.vollen.purrsonal.exception.PetAddException;
 import co.in.vollen.purrsonal.service.PetService;
@@ -66,6 +67,38 @@ public class PetController {
         }
         return ResponseEntity.created(location).body(Map.of(
                 "message", "Pet added successfully",
+                "petId", id));
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<?> updatePet(@Valid @ModelAttribute PetUpdateRequest petUpdateReq) {
+
+        Pet savedPet = petService.updatePet(petUpdateReq);
+        Long id = savedPet.getId();
+
+        if (id == null) {
+            throw new PetAddException("Failed to update pet");
+        }
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(id)
+                .toUri();
+
+        if (petUpdateReq.isPhotoUpdated() && petUpdateReq.getPhoto() != null && !petUpdateReq.getPhoto().isEmpty()) {
+
+            boolean photoUploaded = petService.uploadPhoto(petUpdateReq.getPhoto(),
+                    savedPet.getOwner().getUsername(), petUpdateReq.getId(), petUpdateReq.getName());
+
+            if (!photoUploaded) {
+
+                return ResponseEntity.created(location).body(Map.of(
+                        "message", "Pet updated successfully but photo upload failed",
+                        "petId", id));
+            }
+        }
+        return ResponseEntity.created(location).body(Map.of(
+                "message", "Pet updated successfully",
                 "petId", id));
     }
 

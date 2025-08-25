@@ -6,7 +6,7 @@ import { MdOutlineMale, MdOutlineFemale, MdOutlineDeleteForever } from "react-ic
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content"
 
-export default function PetList({ pets, setSuccessMsg, onPetDeleted }) {
+export default function PetList({ pets, setSuccessMsg, onPetDeleted, onPetSelected }) {
 
     if (!pets || pets.length === 0)
         return null;
@@ -57,16 +57,12 @@ export default function PetList({ pets, setSuccessMsg, onPetDeleted }) {
         return (
             <div key={pet.id} className="pet-card"
                 role="button" tabIndex={0}
-                onClick={() => console.log("pet " + pet.name + " clicked!")}
+                onClick={() => onPetSelected(pet)}
             ><div><Image
-                src={image}
+                src={`${image}?t=${Date.now()}`}
                 alt="pet-photo"
                 roundedCircle
                 className="pet-list-photo"
-                onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = placeholderImage;
-                }}
             /><span className="pet-name">{pet.name}</span>
                     {pet.sex
                         && pet.sex === "Male" &&

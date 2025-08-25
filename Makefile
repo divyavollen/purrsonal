@@ -24,3 +24,11 @@ rmi:
 
 rmc:
 	docker rm -f $$(docker ps -aq)
+
+prune:
+	docker container prune -f
+	docker image prune -f
+	docker builder prune -f
+	docker volume prune -f
+	docker network prune -f
+

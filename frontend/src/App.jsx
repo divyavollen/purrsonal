@@ -4,7 +4,6 @@ import Register from "./components/auth/Register";
 import Login from "./components/auth/Login";
 import Home from "./components/app/Home";
 import HomeLayout from "./components/layout/HomeLayout";
-import AddPet from "./components/pet/AddPet";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 export default function App() {
@@ -15,10 +14,15 @@ export default function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
 
-                <Route path="/" element={<HomeLayout />}>
-                    <Route index element={<ProtectedRoute>
+                <Route path="/" element={
+                    <ProtectedRoute>
+                        <HomeLayout />
+                    </ProtectedRoute>
+                }>
+
+                    <Route index element={
                         <Home />
-                    </ProtectedRoute>} />
+                    } />
                 </Route>
             </Routes>
         </BrowserRouter>

@@ -1,14 +1,21 @@
 import React from "react";
-import { Button, FloatingLabel, Form } from "react-bootstrap";
+import { Button, FloatingLabel, Form, Image } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import "../../css/pet.css";
-import { validateFile } from "../utils/validate";
 import { handleApiFormErrors } from "../utils/error";
 import Paw from "/src/images/paw.png"
 import ReactFileReader from "react-file-reader";
 import { FiCamera } from "react-icons/fi";
 
-export default function AddPet({ setAddSuccess, setGlobalErrorMessage, closeForm, onPetAdded, setSuccessMsg }) {
+export default function PetForm({ formConfig, mode, selectedPet }) {
+
+    const {
+        setActionSuccess,
+        setGlobalErrorMessage,
+        closeForm,
+        updatePetList,
+        setSuccessMsg
+    } = formConfig;
 
     const {
         register,
@@ -22,11 +29,36 @@ export default function AddPet({ setAddSuccess, setGlobalErrorMessage, closeForm
 
     const [preview, setPreview] = React.useState(Paw);
     const [uploadedFile, setUploadedFile] = React.useState(null);
+    const [isPhotoUpdated, setIsPhotoUpdated] = React.useState(false);
+
+    React.useEffect(() => {
+
+        if (selectedPet && mode === 'edit') {
+
+            console.log("Pet edit mode " + selectedPet.name, + " id : " + selectedPet.id);
+
+            if (selectedPet.imageURL) {
+                setPreview(selectedPet.imageURL);
+                setValue("photo", selectedPet.imageURL);
+            }
+
+            reset({
+                name: selectedPet.name || "",
+                sex: selectedPet.sex || "",
+                birthDate: selectedPet.birthDate || "",
+                photo: selectedPet.photo || "",
+            });
+        } else {
+            reset();
+        }
+    }, [selectedPet, reset, setValue]);
+
 
     const handleFiles = (files) => {
         setPreview(files.base64);
         setUploadedFile(files.fileList[0]);
-        setValue("photo", files.fileList[0]); 
+        setValue("photo", files.fileList[0]);
+        setIsPhotoUpdated(true);
     };
 
     const addPet = (formData) => {
@@ -47,30 +79,64 @@ export default function AddPet({ setAddSuccess, setGlobalErrorMessage, closeForm
         }
 
         try {
-            fetch(`${API_URL}/pet/add`, {
+            if (mode === 'add') {
+                fetch(`${API_URL}/pet/add`, {
 
-                method: "POST",
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                },
-                body: formDataObj
-            })
-                .then(async response => {
-                    if (response.ok) {
-                        console.log("New pet " + formData.name + "added!")
-                        setAddSuccess();
-                        setSuccessMsg("New pet added succesfully!");
-                        closeForm();
-                        reset();
-                        onPetAdded();
-                        clearErrors();
-                    } else {
-                        const data = await response.json();
-                        if (data.errors)
-                            handleApiFormErrors(data.errors, { setGlobalErrorMessage, setError });
-                    }
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: formDataObj
+                })
+                    .then(async response => {
+                        if (response.ok) {
+                            console.log("New pet " + formData.name + "added!")
+                            setActionSuccess();
+                            setSuccessMsg("New pet added succesfully!");
+                            closeForm();
+                            reset();
+                            console.log("Calling update pet list");
+                            updatePetList();
+                            clearErrors();
+                        } else {
+                            const data = await response.json();
+                            if (data.errors)
+                                handleApiFormErrors(data.errors, { setGlobalErrorMessage, setError });
+                        }
+                    });
+            }
+            else if (mode === 'edit') {
 
-                });
+                console.log("Updating pet " + selectedPet.id);
+
+                formDataObj.append("id", selectedPet.id);
+                formDataObj.append("isPhotoUpdated", isPhotoUpdated);
+
+                fetch(`${API_URL}/pet/update`, {
+
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: formDataObj
+                })
+                    .then(async response => {
+                        if (response.ok) {
+                            console.log("Details for " + formData.name + " update!")
+                            setActionSuccess();
+                            setSuccessMsg("Pet details updated succesfully!");
+                            closeForm();
+                            reset();
+                            updatePetList();
+                            clearErrors();
+                        } else {
+                            const data = await response.json();
+                            if (data.errors)
+                                handleApiFormErrors(data.errors, { setGlobalErrorMessage, setError });
+                        }
+
+                    });
+            }
         }
         catch (error) {
             setErrorMessage("Internal server error");
@@ -93,12 +159,14 @@ export default function AddPet({ setAddSuccess, setGlobalErrorMessage, closeForm
                     <div className="pet-photo-container">
                         <h2>Add Pet</h2>
                         <div className="preview-container">
-                            <img src={preview} alt="Pet Photo" />
-
+                            <Image
+                                src={preview}
+                                alt="pet-photo"
+                                roundedCircle
+                            />
                             <div className="camera-icon-wrapper">
                                 <FiCamera size={30} />
                             </div>
-
                         </div>
                     </div>
                 </ReactFileReader>
@@ -175,7 +243,7 @@ export default function AddPet({ setAddSuccess, setGlobalErrorMessage, closeForm
                 </FloatingLabel>
 
                 <Button type="submit" variant="primary" className="w-100 add-pet-btn">
-                    Add
+                    {mode === 'edit' ? "Update" : "Add"}
                 </Button>
             </Form>
         </div>
