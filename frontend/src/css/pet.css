@@ -1,0 +1,186 @@
+.pet-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 2rem;
+    padding: 2rem;
+}
+
+.pet-list-container {
+    max-height: calc(4 * 108px);
+    overflow-y: auto;
+    width: 360px;
+}
+
+.pet-list-title {
+    margin: 0;
+    padding-bottom: 1rem;
+}
+
+.pet-card,
+.add-pet-card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    width: 300px;
+    margin: 16px;
+    background-color: white;
+    height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.pet-card:hover,
+.add-pet-card:hover {
+    background-color: #f3f6f4;
+}
+
+.add-pet-form-card {
+    position: relative;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    margin-top: 0;
+    padding: 20px;
+    background-color: white;
+}
+
+.close-add-form {
+    border: none;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    font-size: 1.25rem;
+    color: #333;
+    cursor: pointer;
+}
+
+.add-pet-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 40px 30px 30px;
+}
+
+.add-pet-form .form-control,
+.add-pet-form .form-select {
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 15px;
+}
+
+.add-pet-form .form-group,
+.add-pet-form .form-label {
+    width: 100%;
+    max-width: 100%;
+}
+
+.photo-field {
+    display: none !important;
+}
+
+.add-pet-btn {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px !important;
+    background-color: #c1d8c3 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 4px !important;
+    cursor: pointer !important;
+    font-size: 1.2rem !important;
+    height: 60px !important;
+}
+
+.pet-list-photo {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    margin-right: 10px;
+    background: #f3f6f4;
+    padding: 2px;
+}
+
+.gender-icon {
+    width: 15px;
+    height: 15px;
+    object-fit: contain;
+    vertical-align: middle;
+    margin-left: 5px;
+}
+
+.pet-name {
+    margin: 2px;
+}
+
+.preview-container {
+    margin-bottom: 32px;
+    align-self: center;
+    transition: opacity 0.3s ease;
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.preview-container img {
+    transition: opacity 0.3s ease;
+}
+
+.camera-icon-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.4;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    color: #6a9c89;
+    z-index: 2;
+}
+
+.preview-container:hover img {
+    opacity: 0.3;
+}
+
+.preview-container:hover .camera-icon-wrapper {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.preview-container button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.preview-container:hover button {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.pet-photo-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.pet-photo-container h2 {
+    margin-top: 90px !important;
+    margin-left: 0 !important;
+}
+
+.preview-container img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    margin-top: 10px;
+}
+
+.dlt-pet-list-btn:hover {
+    color: red;
+}

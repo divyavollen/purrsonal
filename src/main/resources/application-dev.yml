@@ -1,0 +1,29 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${PURRSONAL_DB_HOST}:${PURRSONAL_DB_PORT}/${PURRSONAL_DB_NAME}
+    username: ${PURRSONAL_DB_USER}
+    password: ${PURRSONAL_DB_PASSWORD}
+    driverClassName: ${PURRSONAL_DB_DRIVER}
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+  endpoint:
+    health:
+      show-details: always
+
+jwt:
+  secret:
+    key: ${JWT_SECRET}
+
+minio:
+  accessKey: ${MINIO_USER}
+  secretKey: ${MINIO_PASSWORD}
+  endpoint: ${MINIO_HOST}:${MINIO_PORT}
+  bucketName: ${MINIO_BUCKET}
+  external-url: http://localhost:9000
