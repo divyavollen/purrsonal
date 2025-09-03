@@ -10,10 +10,10 @@ This app demonstrates how to build and containerize a Spring Boot backend and Re
 - Containerization: Docker (Dockerfile, Docker Compose, volumes)
 
 # Features
-- Create and manage pet records.
+- Create and manage pet records
 - REST APIs for CRUD operations
 - ReactJS frontend consuming APIs
-- Dockerized backend + database setup with persistent volumes
+- Dockerized frontend + backend + database setup with persistent volumes
 - Local automation with Makefile for build/run tasks
 
 # First-time setup of dev tools
