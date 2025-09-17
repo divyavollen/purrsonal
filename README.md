@@ -1,6 +1,7 @@
 # Purrsonal - Pet tracker
 A practice project to explore full-stack development with modern tools.
 This app demonstrates how to build and containerize a Spring Boot backend and ReactJS frontend for managing pet information.
+Code and development by me. Occasional reviews by others.
 
 # Tech Stack
 - Backend: Spring Boot (REST APIs)
